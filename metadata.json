@@ -1,0 +1,6 @@
+{
+  "name": "UCI Daily Tool",
+  "description": "Uma ferramenta completa para o dia-a-dia na UCI: checklists de rondas (FAST-HUG), scores de gravidade (SOFA) e calculadoras clínicas essenciais.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

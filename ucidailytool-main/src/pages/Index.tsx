@@ -1,0 +1,93 @@
+import { useState } from "react";
+import { Activity, Brain, Wind, Heart, FlaskConical, Utensils, Droplets, Bug, BarChart3, ClipboardCheck } from "lucide-react";
+import { PatientProvider } from "@/contexts/PatientContext";
+import { useTheme } from "@/hooks/useTheme";
+import ThemeSelector from "@/components/ThemeSelector";
+
+import GeralTab from "@/components/tabs/GeralTab";
+import NeurologicoTab from "@/components/tabs/NeurologicoTab";
+import VentilatorioTab from "@/components/tabs/VentilatorioTab";
+import CardiovascularTab from "@/components/tabs/CardiovascularTab";
+import RenalTab from "@/components/tabs/RenalTab";
+import DigestivoTab from "@/components/tabs/DigestivoTab";
+import HematologicoTab from "@/components/tabs/HematologicoTab";
+import InfecaoTab from "@/components/tabs/InfecaoTab";
+import PrognosticoTab from "@/components/tabs/PrognosticoTab";
+import FinalizacaoTab from "@/components/tabs/FinalizacaoTab";
+
+const tabs = [
+  { id: "geral", label: "Geral", icon: Activity },
+  { id: "neuro", label: "Neuro", icon: Brain },
+  { id: "vent", label: "Vent", icon: Wind },
+  { id: "cardio", label: "Cardio", icon: Heart },
+  { id: "renal", label: "Renal", icon: FlaskConical },
+  { id: "digest", label: "Digest", icon: Utensils },
+  { id: "hemato", label: "Hemato", icon: Droplets },
+  { id: "infecao", label: "Infeção", icon: Bug },
+  { id: "prognostico", label: "Prognóstico", icon: BarChart3 },
+  { id: "final", label: "Final", icon: ClipboardCheck },
+];
+
+const Index = () => {
+  const [activeTab, setActiveTab] = useState("geral");
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <PatientProvider>
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
+          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-primary/15 flex items-center justify-center pulse-glow">
+              <Activity className="w-4 h-4 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h1 className="text-sm font-bold gradient-text">ICU Manager</h1>
+              <p className="text-[10px] text-muted-foreground">Gestão do Doente Crítico</p>
+            </div>
+            <ThemeSelector theme={theme} setTheme={setTheme} />
+          </div>
+
+          <div className="max-w-5xl mx-auto px-4 pb-2">
+            <nav className="flex gap-1 overflow-x-auto scrollbar-hide">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium whitespace-nowrap transition-all ${
+                      activeTab === tab.id
+                        ? "bg-primary/15 text-primary border border-primary/25"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted border border-transparent"
+                    }`}>
+                    <Icon className="w-3.5 h-3.5" />
+                    {tab.label}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+        </header>
+
+        <main className="max-w-5xl mx-auto px-4 py-5">
+          <div className={activeTab === "geral" ? "" : "hidden"}><GeralTab /></div>
+          <div className={activeTab === "neuro" ? "" : "hidden"}><NeurologicoTab /></div>
+          <div className={activeTab === "vent" ? "" : "hidden"}><VentilatorioTab /></div>
+          <div className={activeTab === "cardio" ? "" : "hidden"}><CardiovascularTab /></div>
+          <div className={activeTab === "renal" ? "" : "hidden"}><RenalTab /></div>
+          <div className={activeTab === "digest" ? "" : "hidden"}><DigestivoTab /></div>
+          <div className={activeTab === "hemato" ? "" : "hidden"}><HematologicoTab /></div>
+          <div className={activeTab === "infecao" ? "" : "hidden"}><InfecaoTab /></div>
+          <div className={activeTab === "prognostico" ? "" : "hidden"}><PrognosticoTab /></div>
+          <div className={activeTab === "final" ? "" : "hidden"}><FinalizacaoTab /></div>
+
+          <footer className="mt-8 pb-6 text-center border-t border-border pt-4">
+            <p className="text-[10px] text-muted-foreground">
+              ⚠️ Esta aplicação é uma ferramenta de apoio à decisão clínica. Valide todos os cálculos. Não substitui o julgamento clínico.
+            </p>
+          </footer>
+        </main>
+      </div>
+    </PatientProvider>
+  );
+};
+
+export default Index;
