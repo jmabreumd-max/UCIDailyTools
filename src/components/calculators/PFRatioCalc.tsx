@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Wind } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,22 @@ export interface CalculatorProps {
 }
 
 const PFRatioCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [pao2, setPao2] = useState(defaultValues?.pao2 || "");
-  const [fio2, setFio2] = useState(defaultValues?.fio2 || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    pao2: calcFieldValidator(),
+  fio2: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    pao2: { global: p.pao2, setGlobal: p.setPao2 },
+    fio2: { global: p.fio2, setGlobal: p.setFio2 }
+  });
+  const { register, formState: { errors } } = form;
+  const pao2 = form.watch("pao2");
+  const fio2 = form.watch("fio2");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const p = parseFloat(pao2);
@@ -52,8 +69,8 @@ const PFRatioCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Classifica gravidade da SDRA, guia estratégia ventilatória (prona, PEEP, BNM) e indica necessidade de ECMO."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="PaO₂" value={pao2} onChange={setPao2} unit="mmHg" />
-        <CalcField label="FiO₂" value={fio2} onChange={setFio2} unit="%" placeholder="21-100" />
+        <CalcField label="PaO₂" {...register("pao2")} error={errors.pao2?.message as string} unit="mmHg" />
+        <CalcField label="FiO₂" {...register("fio2")} error={errors.fio2?.message as string} unit="%" placeholder="21-100" />
       </div>
       <CalcResult label="Relação P/F" value={resultado} status={classificacao?.status} />
       {classificacao && (

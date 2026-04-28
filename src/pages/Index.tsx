@@ -6,6 +6,7 @@ import { useTheme } from "@/hooks/useTheme";
 import ThemeSelector from "@/components/ThemeSelector";
 import PCRModal from "@/components/PCRModal";
 import EventLogViewer from "@/components/EventLogViewer";
+import GlobalPatientDrawer from "@/components/GlobalPatientDrawer";
 
 import GeralTab from "@/components/tabs/GeralTab";
 import NeurologicoTab from "@/components/tabs/NeurologicoTab";
@@ -54,6 +55,7 @@ const Index = () => {
               </div>
               
               <div className="flex items-center gap-2">
+                <GlobalPatientDrawer />
                 <PCRModal />
                 <button
                   onClick={() => {

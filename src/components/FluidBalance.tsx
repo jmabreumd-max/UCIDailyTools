@@ -53,12 +53,12 @@ const FluidBalance = () => {
         <div>
           <p className="text-[10px] font-semibold text-primary uppercase tracking-wide mb-2">Entradas</p>
           <div className="space-y-2">
-            <CalcField label="Cristalóides" value={cristaloides} onChange={setCristaloides} unit="mL" />
-            <CalcField label="Colóides" value={coloides} onChange={setColoides} unit="mL" />
-            <CalcField label="Hemoderivados" value={hemoderivados} onChange={setHemoderivados} unit="mL" />
-            <CalcField label="Nutrição" value={nutricao} onChange={setNutricao} unit="mL" />
-            <CalcField label="Medicação IV" value={medicacao} onChange={setMedicacao} unit="mL" />
-            <CalcField label="Outras" value={outrasEntradas} onChange={setOutrasEntradas} unit="mL" />
+            <CalcField label="Cristalóides" value={cristaloides} onChange={(e) => setCristaloides(e.target.value)} unit="mL" />
+            <CalcField label="Colóides" value={coloides} onChange={(e) => setColoides(e.target.value)} unit="mL" />
+            <CalcField label="Hemoderivados" value={hemoderivados} onChange={(e) => setHemoderivados(e.target.value)} unit="mL" />
+            <CalcField label="Nutrição" value={nutricao} onChange={(e) => setNutricao(e.target.value)} unit="mL" />
+            <CalcField label="Medicação IV" value={medicacao} onChange={(e) => setMedicacao(e.target.value)} unit="mL" />
+            <CalcField label="Outras" value={outrasEntradas} onChange={(e) => setOutrasEntradas(e.target.value)} unit="mL" />
           </div>
           {totalEntradas > 0 && (
             <div className="mt-2 text-[11px] font-mono font-semibold text-primary text-right">
@@ -71,12 +71,12 @@ const FluidBalance = () => {
         <div>
           <p className="text-[10px] font-semibold text-destructive uppercase tracking-wide mb-2">Saídas</p>
           <div className="space-y-2">
-            <CalcField label="Diurese" value={diurese} onChange={setDiurese} unit="mL" />
-            <CalcField label="Drenos" value={drenos} onChange={setDrenos} unit="mL" />
-            <CalcField label="Perdas GI" value={perdasGI} onChange={setPerdasGI} unit="mL" />
-            <CalcField label="UF (TSFR)" value={uf} onChange={setUf} unit="mL" />
-            <CalcField label="P. Insensíveis" value={perdasInsensiveis} onChange={setPerdasInsensiveis} unit="mL" />
-            <CalcField label="Outras" value={outrasSaidas} onChange={setOutrasSaidas} unit="mL" />
+            <CalcField label="Diurese" value={diurese} onChange={(e) => setDiurese(e.target.value)} unit="mL" />
+            <CalcField label="Drenos" value={drenos} onChange={(e) => setDrenos(e.target.value)} unit="mL" />
+            <CalcField label="Perdas GI" value={perdasGI} onChange={(e) => setPerdasGI(e.target.value)} unit="mL" />
+            <CalcField label="UF (TSFR)" value={uf} onChange={(e) => setUf(e.target.value)} unit="mL" />
+            <CalcField label="P. Insensíveis" value={perdasInsensiveis} onChange={(e) => setPerdasInsensiveis(e.target.value)} unit="mL" />
+            <CalcField label="Outras" value={outrasSaidas} onChange={(e) => setOutrasSaidas(e.target.value)} unit="mL" />
           </div>
           {totalSaidas > 0 && (
             <div className="mt-2 text-[11px] font-mono font-semibold text-destructive text-right">
@@ -110,7 +110,7 @@ const FluidBalance = () => {
       )}
 
       <div className="mt-3 pt-3 border-t border-border">
-        <CalcField label="Meta Diária" value={metaDiaria} onChange={setMetaDiaria} unit="mL" placeholder="ex: -500" />
+        <CalcField label="Meta Diária" value={metaDiaria} onChange={(e) => setMetaDiaria(e.target.value)} unit="mL" placeholder="ex: -500" />
         {meta !== 0 && hasData && (
           <div className="mt-2">
             <div className="flex justify-between text-[10px]">

@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Scale } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,22 @@ export interface CalculatorProps {
 }
 
 const IMCCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [peso, setPeso] = useState(defaultValues?.peso || "");
-  const [altura, setAltura] = useState(defaultValues?.altura || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    peso: calcFieldValidator(),
+  altura: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    peso: { global: p.pesoAtual, setGlobal: p.setPesoAtual },
+    altura: { global: p.altura, setGlobal: p.setAltura }
+  });
+  const { register, formState: { errors } } = form;
+  const peso = form.watch("peso");
+  const altura = form.watch("altura");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const p = parseFloat(peso);
@@ -54,8 +71,8 @@ const IMCCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Define se usar peso atual (desnutrição), peso ideal (eutrófico) ou peso ajustado (obesidade) para nutrição e ventilação mecânica."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Peso" value={peso} onChange={setPeso} unit="kg" />
-        <CalcField label="Altura" value={altura} onChange={setAltura} unit="cm" />
+        <CalcField label="Peso" {...register("peso")} error={errors.peso?.message as string} unit="kg" />
+        <CalcField label="Altura" {...register("altura")} error={errors.altura?.message as string} unit="cm" />
       </div>
       <CalcResult label="IMC" value={resultado} unit="kg/m²" status={classificacao?.status} />
       {classificacao && (

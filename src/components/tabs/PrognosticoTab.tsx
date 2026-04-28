@@ -363,7 +363,7 @@ const PrognosticoTab = () => {
       if (sofaManualOverride[i]) return prevScore;
       return autoSofaScores[i] ?? prevScore;
     }));
-  }, [autoSofaScores, sofaManualOverride]);
+  }, [autoSofaScores, sofaManualOverride, setSofaScores]);
 
   const sofaTotal = useMemo(() => sofaScores.reduce((a, b) => a + b, 0), [sofaScores]);
 
@@ -379,9 +379,9 @@ const PrognosticoTab = () => {
   const [cpAscites, setCpAscites] = usePersistedState("prog-cpAscites", 1);
   const [cpEncef, setCpEncef] = usePersistedState("prog-cpEncef", 1);
 
-  useEffect(() => { if (bili > 0) setCpBili(bili < 2 ? 1 : bili <= 3 ? 2 : 3); }, [bili]);
-  useEffect(() => { if (alb > 0) setCpAlb(alb > 3.5 ? 1 : alb >= 2.8 ? 2 : 3); }, [alb]);
-  useEffect(() => { if (inrVal > 0) setCpInr(inrVal < 1.7 ? 1 : inrVal <= 2.3 ? 2 : 3); }, [inrVal]);
+  useEffect(() => { if (bili > 0) setCpBili(bili < 2 ? 1 : bili <= 3 ? 2 : 3); }, [bili, setCpBili]);
+  useEffect(() => { if (alb > 0) setCpAlb(alb > 3.5 ? 1 : alb >= 2.8 ? 2 : 3); }, [alb, setCpAlb]);
+  useEffect(() => { if (inrVal > 0) setCpInr(inrVal < 1.7 ? 1 : inrVal <= 2.3 ? 2 : 3); }, [inrVal, setCpInr]);
 
   const cpTotal = cpBili + cpAlb + cpInr + cpAscites + cpEncef;
   const cpResult = childPughClass(cpTotal);

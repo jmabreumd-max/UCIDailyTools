@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Waves } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,9 +15,24 @@ export interface CalculatorProps {
 }
 
 const WaterDeficitCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [peso, setPeso] = useState(defaultValues?.peso || "");
-  const [naAtual, setNaAtual] = useState(defaultValues?.naAtual || "");
-  const [sexo, setSexo] = useState<"M" | "F">("M");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    peso: calcFieldValidator(),
+  naAtual: calcFieldValidator(),
+  sexo: z.string().optional()
+  });
+  const form = useCalculatorForm(calcSchema, {
+    peso: { global: p.pesoAtual, setGlobal: p.setPesoAtual }
+  });
+  const { register, formState: { errors }, watch, setValue } = form;
+  const peso = watch("peso");
+  const naAtual = watch("naAtual");
+  const sexo = watch("sexo") ?? "M";
+  
+  
+  
+  
 
   const resultado = useMemo(() => {
     const p = parseFloat(peso);
@@ -54,7 +72,7 @@ const WaterDeficitCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
     >
       <div className="flex gap-2">
         <button
-          onClick={() => setSexo("M")}
+          onClick={() => setValue("sexo", "M")}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             sexo === "M"
               ? "bg-primary/20 text-primary border border-primary/30"
@@ -64,7 +82,7 @@ const WaterDeficitCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
           ♂ (0.6)
         </button>
         <button
-          onClick={() => setSexo("F")}
+          onClick={() => setValue("sexo", "F")}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             sexo === "F"
               ? "bg-primary/20 text-primary border border-primary/30"
@@ -75,8 +93,8 @@ const WaterDeficitCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
         </button>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Peso" value={peso} onChange={setPeso} unit="kg" />
-        <CalcField label="Na⁺ atual" value={naAtual} onChange={setNaAtual} unit="mEq/L" />
+        <CalcField label="Peso" {...register("peso")} error={errors.peso?.message as string} unit="kg" />
+        <CalcField label="Na⁺ atual" {...register("naAtual")} error={errors.naAtual?.message as string} unit="mEq/L" />
       </div>
       <CalcResult label="Déficit de Água Livre" value={resultado} unit="L" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

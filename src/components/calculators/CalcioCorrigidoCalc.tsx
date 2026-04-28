@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Droplets } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,22 @@ export interface CalculatorProps {
 }
 
 const CalcioCorrigidoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [calcio, setCalcio] = useState(defaultValues?.calcio || "");
-  const [albumina, setAlbumina] = useState(defaultValues?.albumina || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    calcio: calcFieldValidator(2.0, 20.0),
+  albumina: calcFieldValidator(0.5, 8.0),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    calcio: { global: p.calcioTotal, setGlobal: p.setCalcioTotal },
+    albumina: { global: p.albumina, setGlobal: p.setAlbumina }
+  });
+  const { register, formState: { errors } } = form;
+  const calcio = form.watch("calcio");
+  const albumina = form.watch("albumina");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const ca = parseFloat(calcio);
@@ -49,8 +66,8 @@ const CalcioCorrigidoCalc = ({ schema, defaultValues }: CalculatorProps = {}) =>
       rationale="Na hipoalbuminemia (comum em UTI), o cálcio total subestima o valor real. A correção evita tratamento desnecessário ou omissão de reposição."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Cálcio Total" value={calcio} onChange={setCalcio} unit="mg/dL" min={2.0} max={20.0} />
-        <CalcField label="Albumina" value={albumina} onChange={setAlbumina} unit="g/dL" min={0.5} max={8.0} />
+        <CalcField label="Cálcio Total" {...register("calcio")} error={errors.calcio?.message as string} unit="mg/dL" min={2.0} max={20.0} />
+        <CalcField label="Albumina" {...register("albumina")} error={errors.albumina?.message as string} unit="g/dL" min={0.5} max={8.0} />
       </div>
       <CalcResult label="Cálcio Corrigido" value={resultado} unit="mg/dL" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

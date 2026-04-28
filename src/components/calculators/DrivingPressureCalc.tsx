@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Activity } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,21 @@ export interface CalculatorProps {
 }
 
 const DrivingPressureCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [pplato, setPplato] = useState(defaultValues?.pplato || "");
-  const [peep, setPeep] = useState(defaultValues?.peep || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    pplato: calcFieldValidator(),
+  peep: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+
+  });
+  const { register, formState: { errors } } = form;
+  const pplato = form.watch("pplato");
+  const peep = form.watch("peep");
+  
+  
+  
 
   const dp = useMemo(() => {
     const pp = parseFloat(pplato);
@@ -47,8 +63,8 @@ const DrivingPressureCalc = ({ schema, defaultValues }: CalculatorProps = {}) =>
       rationale="Guia ajuste de VC e PEEP na ventilação protetora. Alvo ≤ 15 cmH₂O reduz mortalidade em SDRA."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="P. Platô" value={pplato} onChange={setPplato} unit="cmH₂O" />
-        <CalcField label="PEEP" value={peep} onChange={setPeep} unit="cmH₂O" />
+        <CalcField label="P. Platô" {...register("pplato")} error={errors.pplato?.message as string} unit="cmH₂O" />
+        <CalcField label="PEEP" {...register("peep")} error={errors.peep?.message as string} unit="cmH₂O" />
       </div>
       <CalcResult label="Driving Pressure" value={dp} unit="cmH₂O" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

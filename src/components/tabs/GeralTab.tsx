@@ -90,9 +90,9 @@ const GeralTab = ({ setActiveTab }: { setActiveTab: (id: string) => void }) => {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
-          <CalcField label="Idade" value={idade} onChange={setIdade} unit="anos" />
-          <CalcField label="Altura" value={altura} onChange={setAltura} unit="cm" />
-          <CalcField label="Peso Atual" value={pesoAtual} onChange={setPesoAtual} unit="kg" />
+          <CalcField label="Idade" value={idade} onChange={(e) => setIdade(e.target.value)} unit="anos" />
+          <CalcField label="Altura" value={altura} onChange={(e) => setAltura(e.target.value)} unit="cm" />
+          <CalcField label="Peso Atual" value={pesoAtual} onChange={(e) => setPesoAtual(e.target.value)} unit="kg" />
         </div>
 
         {/* Weight Reference */}

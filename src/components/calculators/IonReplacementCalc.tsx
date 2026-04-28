@@ -1,4 +1,6 @@
-import React, { useMemo, useState } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import React, { useMemo } from "react";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
 import { usePatient } from "@/contexts/PatientContext";
 import CalcField from "../CalcField";
 import InfoTooltip from "../InfoTooltip";
@@ -16,29 +18,33 @@ export default function IonReplacementCalc({ schema, defaultValues }: Calculator
   const { pesoAtual } = usePatient();
   const peso = parseFloat(pesoAtual) || 0;
 
-  const [naAtual, setNaAtual] = useState(defaultValues?.naAtual || "");
-  const [naAlvo, setNaAlvo] = useState(defaultValues?.naAlvo || "");
+  const calcSchema = z.object({
+    naAtual: calcFieldValidator(),
+    naAlvo: calcFieldValidator(),
+    kAtual: calcFieldValidator(),
+    kAlvo: calcFieldValidator(),
+  });
+
+  const form = useCalculatorForm(calcSchema, {});
+  const { register, formState: { errors } } = form;
   
-  const [kAtual, setKAtual] = useState(defaultValues?.kAtual || "");
-  const [kAlvo, setKAlvo] = useState(defaultValues?.kAlvo || "");
+  const naAtual = form.watch("naAtual");
+  const naAlvo = form.watch("naAlvo");
+  const kAtual = form.watch("kAtual");
+  const kAlvo = form.watch("kAlvo");
 
   const tbw = peso * 0.6; // Simplified Total Body Water (0.6 for men, usually 0.5 for women)
 
   // Sodium calculation
   const naResult = useMemo(() => {
-    const current = parseFloat(naAtual);
-    const target = parseFloat(naAlvo);
+    const current = parseFloat(naAtual || "");
+    const target = parseFloat(naAlvo || "");
     if (!current || !target || !peso || target <= current) return null;
 
     const deficit = tbw * (target - current);
     
     // Safety check (max 8mEq/L in 24h to avoid ODS)
     const isUnsafe = (target - current) > 8;
-
-    // Fluid equivalents
-    // NaCl 0.9% = 154 mEq/L = 0.154 mEq/mL
-    // NaCl 3% = 513 mEq/L = 0.513 mEq/mL
-    // NaCl 20% = 3422 mEq/L = 3.42 mEq/mL
 
     return {
       deficit: deficit.toFixed(1),
@@ -51,22 +57,16 @@ export default function IonReplacementCalc({ schema, defaultValues }: Calculator
 
   // Potassium calculation
   const kResult = useMemo(() => {
-    const current = parseFloat(kAtual);
-    const target = parseFloat(kAlvo);
+    const current = parseFloat(kAtual || "");
+    const target = parseFloat(kAlvo || "");
     if (!current || !target || !peso || target <= current) return null;
 
-    // Intracellular largely, rough estimation of deficit
-    // Usually: TBW * (Target K - Current K) but K is mostly intracellular.
-    // Clinically: ~100mEq deficit for every 0.3 mEq/L drop below 4.0.
-    // Formula approximation: 0.4 * peso * (Target - Current) + dynamic loss
     const deficit = 0.4 * peso * (target - current);
-    
-    // KCl 7.45% = 1 mEq/mL
     
     return {
       deficit: deficit.toFixed(1),
-      maxRate: 10, // Max safe peripheral rate mEq/h
-      maxRateCentral: 20 // Max safe central rate mEq/h
+      maxRate: 10,
+      maxRateCentral: 20
     };
   }, [kAtual, kAlvo, peso]);
 
@@ -84,8 +84,8 @@ export default function IonReplacementCalc({ schema, defaultValues }: Calculator
       <div className="bg-muted/20 border border-border rounded-lg p-3 mb-3">
         <h3 className="text-[12px] font-bold text-primary mb-2">Correção de Hiponatremia</h3>
         <div className="grid grid-cols-2 gap-3 mb-3">
-          <CalcField label="Sódio (Na) Atual" value={naAtual} onChange={setNaAtual} unit="mEq/L" />
-          <CalcField label="Sódio (Na) Alvo" value={naAlvo} onChange={setNaAlvo} unit="mEq/L" />
+          <CalcField label="Sódio (Na) Atual" {...register("naAtual")} error={errors.naAtual?.message as string} unit="mEq/L" />
+          <CalcField label="Sódio (Na) Alvo" {...register("naAlvo")} error={errors.naAlvo?.message as string} unit="mEq/L" />
         </div>
         
         {naResult && (
@@ -127,8 +127,8 @@ export default function IonReplacementCalc({ schema, defaultValues }: Calculator
       <div className="bg-muted/20 border border-border rounded-lg p-3">
         <h3 className="text-[12px] font-bold text-primary mb-2">Correção de Hipocaliemia</h3>
         <div className="grid grid-cols-2 gap-3 mb-3">
-          <CalcField label="Potássio (K) Atual" value={kAtual} onChange={setKAtual} unit="mEq/L" />
-          <CalcField label="Potássio (K) Alvo" value={kAlvo} onChange={setKAlvo} unit="mEq/L" />
+          <CalcField label="Potássio (K) Atual" {...register("kAtual")} error={errors.kAtual?.message as string} unit="mEq/L" />
+          <CalcField label="Potássio (K) Alvo" {...register("kAlvo")} error={errors.kAlvo?.message as string} unit="mEq/L" />
         </div>
 
         {kResult && (
@@ -143,7 +143,7 @@ export default function IonReplacementCalc({ schema, defaultValues }: Calculator
               <div className="flex justify-between"><span>Vazão Máx Via Central:</span> <span className="text-destructive">20 mEq/h</span></div>
             </div>
             <div className="mt-2">
-              <Interpretation text={`Potássio alvo: ${kAlvo} mEq/L. A reposição de K+ deve ser lenta (< 10-20 mEq/h) pelas repercussões arrítmicas agudas. Aumentos rápidos (< 0.5 a 1 mEq/L) ocorrem imediatamente, mas as reservas intracelulares repõem-se de forma muito mais lenta. Reavaliar K+ a cada poucas horas.`} />
+              <Interpretation text={`Potássio alvo: ${kAlvo}. A reposição de K+ deve ser lenta (< 10-20 mEq/h) pelas repercussões arrítmicas agudas. Aumentos rápidos (< 0.5 a 1 mEq/L) ocorrem imediatamente, mas as reservas intracelulares repõem-se de forma muito mais lenta. Reavaliar K+ a cada poucas horas.`} />
             </div>
           </div>
         )}
@@ -152,3 +152,4 @@ export default function IonReplacementCalc({ schema, defaultValues }: Calculator
     </CollapsibleSection>
   );
 }
+

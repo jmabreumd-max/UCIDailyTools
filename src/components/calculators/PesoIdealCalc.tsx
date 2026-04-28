@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { User } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,21 @@ export interface CalculatorProps {
 }
 
 const PesoIdealCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [altura, setAltura] = useState(defaultValues?.altura || "");
-  const [sexo, setSexo] = useState<"M" | "F">("M");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    altura: calcFieldValidator(),
+  sexo: z.string().optional()
+  });
+  const form = useCalculatorForm(calcSchema, {
+    altura: { global: p.altura, setGlobal: p.setAltura }
+  });
+  const { register, formState: { errors }, watch, setValue } = form;
+  const altura = watch("altura");
+  const sexo = watch("sexo") ?? "M";
+  
+  
+  
 
   const resultado = useMemo(() => {
     const h = parseFloat(altura);
@@ -43,7 +59,7 @@ const PesoIdealCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
     >
       <div className="flex gap-2">
         <button
-          onClick={() => setSexo("M")}
+          onClick={() => setValue("sexo", "M")}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             sexo === "M"
               ? "bg-primary/20 text-primary border border-primary/30"
@@ -53,7 +69,7 @@ const PesoIdealCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
           ♂ Masculino
         </button>
         <button
-          onClick={() => setSexo("F")}
+          onClick={() => setValue("sexo", "F")}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             sexo === "F"
               ? "bg-primary/20 text-primary border border-primary/30"
@@ -63,7 +79,7 @@ const PesoIdealCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
           ♀ Feminino
         </button>
       </div>
-      <CalcField label="Altura" value={altura} onChange={setAltura} unit="cm" />
+      <CalcField label="Altura" {...register("altura")} error={errors.altura?.message as string} unit="cm" />
       <div className="grid grid-cols-2 gap-3">
         <CalcResult label="Peso Ideal" value={resultado} unit="kg" />
         <CalcResult label="VC (6-8 ml/kg)" value={vc} unit="ml" />

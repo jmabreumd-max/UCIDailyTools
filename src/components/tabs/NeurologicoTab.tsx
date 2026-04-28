@@ -83,11 +83,11 @@ const IOT_DRUGS = [
 ];
 
 const SEDATION_INFUSIONS = [
-  { name: "Fentanil", concentrations: [{ label: "50 mcg / 50 mL (1 mcg/mL)", mgPerMl: 0.001 }], doseUnit: "mcg/kg/h" as const, doseRange: "0.5–3", notes: "Analgesia pura. 1ª linha.", rassGuide: "BPS ≤ 4: manter | BPS 5–6: ↑ 0.5 mcg/kg/h | BPS ≥ 7: bólus + ↑" },
+  { name: "Fentanil", concentrations: [{ label: "500 mcg / 50 mL (10 mcg/mL)", mgPerMl: 0.01 }], doseUnit: "mcg/kg/h" as const, doseRange: "0.5–3", notes: "Analgesia pura. 1ª linha.", rassGuide: "BPS ≤ 4: manter | BPS 5–6: ↑ 0.5 mcg/kg/h | BPS ≥ 7: bólus + ↑" },
   { name: "Remifentanil", concentrations: [{ label: "5 mg / 50 mL (100 mcg/mL)", mgPerMl: 0.1 }], doseUnit: "mcg/kg/min" as const, doseRange: "0.05–0.25", notes: "Sem acúmulo. Hiperalgesia. Desmame rápido.", rassGuide: "RASS 0 a -1: 0.05–0.1 | RASS -2: 0.1–0.15 | RASS -3 a -4: 0.15–0.25" },
   { name: "Sufentanil", concentrations: [{ label: "250 mcg / 50 mL (5 mcg/mL)", mgPerMl: 0.005 }], doseUnit: "mcg/kg/h" as const, doseRange: "0.1–0.5", notes: "Metabolismo hepático. Longa semi-vida.", rassGuide: "Ajustar dose para atingir BPS ≤ 4." },
   { name: "Midazolam", concentrations: [{ label: "50 mg / 50 mL (1 mg/mL)", mgPerMl: 1 }], doseUnit: "mg/kg/h" as const, doseRange: "0.02–0.1", notes: "Metabolito ativo (IR). ↑ Delirium.", rassGuide: "RASS -1 a -2: 0.02–0.04 | RASS -3: 0.04–0.06 | RASS -4 a -5: 0.06–0.1" },
-  { name: "Propofol", concentrations: [{ label: "1% (10 mg/mL)", mgPerMl: 10 }, { label: "2% (20 mg/mL)", mgPerMl: 20 }], doseUnit: "mg/kg/h" as const, doseRange: "0.5–4", notes: "PRIS se > 5 mg/kg/h > 48h. 1.1 kcal/mL.", rassGuide: "RASS 0 a -1: 0.5–1.5 | RASS -2: 1.5–2.5 | RASS -3 a -4: 2.5–4.0" },
+  { name: "Propofol", concentrations: [{ label: "2% (20 mg/mL)", mgPerMl: 20 }, { label: "1% (10 mg/mL)", mgPerMl: 10 }], doseUnit: "mg/kg/h" as const, doseRange: "0.5–4", notes: "PRIS se > 5 mg/kg/h > 48h. 1.1 kcal/mL. (1% preferencial para bolus)", rassGuide: "RASS 0 a -1: 0.5–1.5 | RASS -2: 1.5–2.5 | RASS -3 a -4: 2.5–4.0" },
   { name: "Dexmedetomidina", concentrations: [{ label: "400 mcg / 100 mL (4 mcg/mL)", mgPerMl: 0.004 }], doseUnit: "mcg/kg/h" as const, doseRange: "0.2–1.4", notes: "Sem depressão respiratória. Anti-delirium. Bradicardia.", rassGuide: "RASS 0 a -1: 0.2–0.5 | RASS -2: 0.5–1.0 | RASS -3: 1.0–1.4" },
   { name: "Cetamina", concentrations: [{ label: "50 mg/mL", mgPerMl: 50 }, { label: "10 mg/mL", mgPerMl: 10 }], doseUnit: "mg/kg/h" as const, doseRange: "0.1–0.5", notes: "Subdissociativa: analgesia + broncodilatação.", rassGuide: "Analgesia: 0.1–0.2 | Sedação: 0.2–0.3 | Dissociativa: 0.3–0.5" },
   { name: "Tiopental", concentrations: [{ label: "1g / 50 mL (20 mg/mL)", mgPerMl: 20 }], doseUnit: "mg/kg/h" as const, doseRange: "2–4", notes: "Coma barbitúrico no TCE. Muito depressor miocárdio.", rassGuide: "Titular p/ Burst Suppression (EEG)" },
@@ -434,7 +434,7 @@ const NeurologicoTab = () => {
             <p className="text-[8px] text-muted-foreground mt-0.5">Integrado do separador Cardio</p>
           </div>
           <div>
-            <CalcField label="PIC" value={pic} onChange={setPic} unit="mmHg" />
+            <CalcField label="PIC" value={pic} onChange={(e) => setPic(e.target.value)} unit="mmHg" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Normal: &lt; 20. Alvo: &lt; 22 (BTF 2016)</p>
           </div>
         </div>
@@ -454,15 +454,15 @@ const NeurologicoTab = () => {
 
         <div className="grid grid-cols-3 gap-2 mt-3">
           <div>
-            <CalcField label="BIS" value={bis} onChange={setBis} unit="" />
+            <CalcField label="BIS" value={bis} onChange={(e) => setBis(e.target.value)} unit="" />
             <p className="text-[8px] text-muted-foreground mt-0.5">40-60: sedação adequada</p>
           </div>
           <div>
-            <CalcField label="NIRS Esq." value={nirsL} onChange={setNirsL} unit="%" />
+            <CalcField label="NIRS Esq." value={nirsL} onChange={(e) => setNirsL(e.target.value)} unit="%" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Normal: 60-80%</p>
           </div>
           <div>
-            <CalcField label="NIRS Dir." value={nirsR} onChange={setNirsR} unit="%" />
+            <CalcField label="NIRS Dir." value={nirsR} onChange={(e) => setNirsR(e.target.value)} unit="%" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Normal: 60-80%</p>
           </div>
         </div>
@@ -500,11 +500,11 @@ const NeurologicoTab = () => {
         </div>
         <div className="grid grid-cols-2 gap-2 mb-3">
           <div>
-            <CalcField label="Vel. MCA (ACM)" value={mcaVelocity} onChange={setMcaVelocity} unit="cm/s" />
+            <CalcField label="Vel. MCA (ACM)" value={mcaVelocity} onChange={(e) => setMcaVelocity(e.target.value)} unit="cm/s" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Velocidade média da Artéria Cerebral Média (DTC)</p>
           </div>
           <div>
-            <CalcField label="Vel. ICA (ACI)" value={icaVelocity} onChange={setIcaVelocity} unit="cm/s" />
+            <CalcField label="Vel. ICA (ACI)" value={icaVelocity} onChange={(e) => setIcaVelocity(e.target.value)} unit="cm/s" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Velocidade da Artéria Carótida Interna extracraniana</p>
           </div>
         </div>
@@ -711,7 +711,7 @@ const NeurologicoTab = () => {
             <span className="text-[11px] font-semibold text-foreground">Fenitoína Corrigida</span>
             <InfoTooltip formula="Medida / ((0.2 × Alb) + 0.1)" reference="10–20 mg/L" />
           </div>
-          <CalcField label="Fenitoína medida" value={phenytoinMeasured} onChange={setPhenytoinMeasured} unit="mg/L" />
+          <CalcField label="Fenitoína medida" value={phenytoinMeasured} onChange={(e) => setPhenytoinMeasured(e.target.value)} unit="mg/L" />
           {phenytoinCorrected !== null && (
             <>
               <CalcResult label="Corrigida" value={phenytoinCorrected.toFixed(1)} unit="mg/L"

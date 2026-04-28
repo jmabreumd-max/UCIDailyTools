@@ -196,7 +196,7 @@ const CardiovascularTab = () => {
       <CollapsibleSection title="Lactato"
         info={<InfoTooltip reference="Normal: < 2 mmol/L" interpretation="Marcador de hipoperfusão. > 2: sépsis. > 4: choque." />}>
         <div className="grid grid-cols-2 gap-3">
-          <CalcField label="Lactato" value={lactato} onChange={setLactato} unit="mmol/L" />
+          <CalcField label="Lactato" value={lactato} onChange={(e) => setLactato(e.target.value)} unit="mmol/L" />
         </div>
         {lac > 0 && (
           <Interpretation status={lac > 4 ? "danger" : lac > 2 ? "warning" : "normal"}
@@ -210,9 +210,9 @@ const CardiovascularTab = () => {
       <CollapsibleSection title="Hemodinâmica" badge={pam !== null ? `PAM ${pam.toFixed(0)}` : undefined}
         info={<InfoTooltip formula="PAM = (PAS + 2×PAD) / 3" reference="Alvo ≥ 65 mmHg" />}>
         <div className="grid grid-cols-3 gap-2 mb-3">
-          <CalcField label="FC" value={fc} onChange={setFc} unit="bpm" />
-          <CalcField label="PAS" value={pas} onChange={setPas} unit="mmHg" />
-          <CalcField label="PAD" value={pad} onChange={setPad} unit="mmHg" />
+          <CalcField label="FC" value={fc} onChange={(e) => setFc(e.target.value)} unit="bpm" />
+          <CalcField label="PAS" value={pas} onChange={(e) => setPas(e.target.value)} unit="mmHg" />
+          <CalcField label="PAD" value={pad} onChange={(e) => setPad(e.target.value)} unit="mmHg" />
         </div>
         {pam !== null && (
           <>
@@ -283,10 +283,10 @@ const CardiovascularTab = () => {
       <CollapsibleSection title="Ecocardiografia — VE"
         info={<InfoTooltip interpretation="Função sistólica e diastólica do ventrículo esquerdo." />}>
         <div className="grid grid-cols-2 gap-2 mb-3">
-          <CalcField label="LVOT Ø" value={lvotD} onChange={setLvotD} unit="cm" />
-          <CalcField label="LVOT VTI" value={lvotVTI} onChange={setLvotVTI} unit="cm" />
-          <CalcField label="FEVE" value={lvef} onChange={setLvef} unit="%" />
-          <CalcField label="FC" value={fc} onChange={setFc} unit="bpm" />
+          <CalcField label="LVOT Ø" value={lvotD} onChange={(e) => setLvotD(e.target.value)} unit="cm" />
+          <CalcField label="LVOT VTI" value={lvotVTI} onChange={(e) => setLvotVTI(e.target.value)} unit="cm" />
+          <CalcField label="FEVE" value={lvef} onChange={(e) => setLvef(e.target.value)} unit="%" />
+          <CalcField label="FC" value={fc} onChange={(e) => setFc(e.target.value)} unit="bpm" />
         </div>
         {coEcho && (
           <>
@@ -297,10 +297,10 @@ const CardiovascularTab = () => {
         <div className="mt-3">
           <p className="text-[10px] font-semibold text-muted-foreground mb-2">Função Diastólica</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <CalcField label="E" value={eWave} onChange={setEWave} unit="cm/s" />
-            <CalcField label="A" value={aWave} onChange={setAWave} unit="cm/s" />
-            <CalcField label="e'" value={ePrime} onChange={setEPrime} unit="cm/s" />
-            <CalcField label="TR Vmáx" value={trVmax} onChange={setTrVmax} unit="m/s" />
+            <CalcField label="E" value={eWave} onChange={(e) => setEWave(e.target.value)} unit="cm/s" />
+            <CalcField label="A" value={aWave} onChange={(e) => setAWave(e.target.value)} unit="cm/s" />
+            <CalcField label="e'" value={ePrime} onChange={(e) => setEPrime(e.target.value)} unit="cm/s" />
+            <CalcField label="TR Vmáx" value={trVmax} onChange={(e) => setTrVmax(e.target.value)} unit="m/s" />
           </div>
           {eaRatio && <CalcResult label="E/A" value={eaRatio.toFixed(2)} unit="" />}
           {eePrimeRatio && (
@@ -317,10 +317,10 @@ const CardiovascularTab = () => {
       <CollapsibleSection title="Ecocardiografia — VD"
         info={<InfoTooltip interpretation="Avaliação da função sistólica do ventrículo direito." />}>
         <div className="grid grid-cols-2 gap-2">
-          <CalcField label="TAPSE" value={tapse} onChange={setTapse} unit="mm" />
-          <CalcField label="S' Tricúspide" value={sTric} onChange={setSTric} unit="cm/s" />
-          <CalcField label="Área VD (diástole)" value={areaD} onChange={setAreaD} unit="cm²" />
-          <CalcField label="Área VD (sístole)" value={areaS} onChange={setAreaS} unit="cm²" />
+          <CalcField label="TAPSE" value={tapse} onChange={(e) => setTapse(e.target.value)} unit="mm" />
+          <CalcField label="S' Tricúspide" value={sTric} onChange={(e) => setSTric(e.target.value)} unit="cm/s" />
+          <CalcField label="Área VD (diástole)" value={areaD} onChange={(e) => setAreaD(e.target.value)} unit="cm²" />
+          <CalcField label="Área VD (sístole)" value={areaS} onChange={(e) => setAreaS(e.target.value)} unit="cm²" />
         </div>
         {tapse && (
           <Interpretation status={parseFloat(tapse) < 17 ? "danger" : "normal"}
@@ -506,10 +506,10 @@ const CardiovascularTab = () => {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <CalcField label="VM pré-ECMO (dias)" value={ecmoParams.mvDays} onChange={(v) => setEcmoParams({ ...ecmoParams, mvDays: v })} unit="dias" />
-              <CalcField label="PaCO₂ pré-ECMO" value={ecmoParams.paco2} onChange={(v) => setEcmoParams({ ...ecmoParams, paco2: v })} unit="mmHg" />
-              <CalcField label="PIP pré-ECMO" value={ecmoParams.pip} onChange={(v) => setEcmoParams({ ...ecmoParams, pip: v })} unit="cmH₂O" />
-              <CalcField label="PEEP pré-ECMO" value={ecmoParams.peep} onChange={(v) => setEcmoParams({ ...ecmoParams, peep: v })} unit="cmH₂O" />
+              <CalcField label="VM pré-ECMO (dias)" value={ecmoParams.mvDays} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, mvDays: v (e.target.value)})} unit="dias" />
+              <CalcField label="PaCO₂ pré-ECMO" value={ecmoParams.paco2} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, paco2: v (e.target.value)})} unit="mmHg" />
+              <CalcField label="PIP pré-ECMO" value={ecmoParams.pip} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, pip: v (e.target.value)})} unit="cmH₂O" />
+              <CalcField label="PEEP pré-ECMO" value={ecmoParams.peep} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, peep: v (e.target.value)})} unit="cmH₂O" />
             </div>
             <div className="space-y-1">
               {[
@@ -534,10 +534,10 @@ const CardiovascularTab = () => {
           <div className="space-y-3">
             <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">ECMO VA — Parâmetros para SAVE</p>
             <div className="grid grid-cols-2 gap-2">
-              <CalcField label="PAD pré-ECMO" value={ecmoParams.diastolicBP} onChange={(v) => setEcmoParams({ ...ecmoParams, diastolicBP: v })} unit="mmHg" />
-              <CalcField label="HCO₃" value={ecmoParams.hco3} onChange={(v) => setEcmoParams({ ...ecmoParams, hco3: v })} unit="mmol/L" />
-              <CalcField label="PIP pré-ECMO" value={ecmoParams.peakInspPressure} onChange={(v) => setEcmoParams({ ...ecmoParams, peakInspPressure: v })} unit="cmH₂O" />
-              <CalcField label="Horas intubação pré-ECMO" value={ecmoParams.intubationHours} onChange={(v) => setEcmoParams({ ...ecmoParams, intubationHours: v })} unit="h" />
+              <CalcField label="PAD pré-ECMO" value={ecmoParams.diastolicBP} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, diastolicBP: v (e.target.value)})} unit="mmHg" />
+              <CalcField label="HCO₃" value={ecmoParams.hco3} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, hco3: v (e.target.value)})} unit="mmol/L" />
+              <CalcField label="PIP pré-ECMO" value={ecmoParams.peakInspPressure} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, peakInspPressure: v (e.target.value)})} unit="cmH₂O" />
+              <CalcField label="Horas intubação pré-ECMO" value={ecmoParams.intubationHours} onChange={(e) => (v) => setEcmoParams({ ...ecmoParams, intubationHours: v (e.target.value)})} unit="h" />
             </div>
             <div>
               <p className="text-[10px] text-muted-foreground font-semibold mb-1">Falências orgânicas agudas pré-ECMO</p>

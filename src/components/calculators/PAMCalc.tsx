@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { HeartPulse } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,21 @@ export interface CalculatorProps {
 }
 
 const PAMCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [pas, setPas] = useState(defaultValues?.pas || "");
-  const [pad, setPad] = useState(defaultValues?.pad || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    pas: calcFieldValidator(),
+  pad: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+
+  });
+  const { register, formState: { errors } } = form;
+  const pas = form.watch("pas");
+  const pad = form.watch("pad");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const s = parseFloat(pas);
@@ -47,8 +63,8 @@ const PAMCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Alvo terapêutico em choque (PAM ≥ 65 mmHg). Guia titulação de vasopressores e avaliação da perfusão tecidual."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="PAS" value={pas} onChange={setPas} unit="mmHg" />
-        <CalcField label="PAD" value={pad} onChange={setPad} unit="mmHg" />
+        <CalcField label="PAS" {...register("pas")} error={errors.pas?.message as string} unit="mmHg" />
+        <CalcField label="PAD" {...register("pad")} error={errors.pad?.message as string} unit="mmHg" />
       </div>
       <CalcResult label="PAM" value={resultado} unit="mmHg" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

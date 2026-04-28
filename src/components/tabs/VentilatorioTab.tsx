@@ -324,11 +324,11 @@ const PeepTitrationSection = ({ peep, pPlat, drivingPressure, calcCompliance, fi
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <CalcField label="Pes expiratória" value={pes} onChange={setPes} unit="cmH₂O" />
+              <CalcField label="Pes expiratória" value={pes} onChange={(e) => setPes(e.target.value)} unit="cmH₂O" />
               <p className="text-[8px] text-muted-foreground mt-0.5">Fim da expiração</p>
             </div>
             <div>
-              <CalcField label="Pes inspiratória" value={pesInsp} onChange={setPesInsp} unit="cmH₂O" />
+              <CalcField label="Pes inspiratória" value={pesInsp} onChange={(e) => setPesInsp(e.target.value)} unit="cmH₂O" />
               <p className="text-[8px] text-muted-foreground mt-0.5">Fim da inspiração</p>
             </div>
           </div>
@@ -633,11 +633,11 @@ const VentilatorioTab = () => {
         <p className="text-[9px] text-muted-foreground font-semibold mb-1.5 uppercase tracking-wider">Oxigenação</p>
         <div className="grid grid-cols-2 gap-3 mb-2">
           <div>
-            <CalcField label="PaO₂" value={pao2} onChange={setPao2} unit="mmHg" />
+            <CalcField label="PaO₂" value={pao2} onChange={(e) => setPao2(e.target.value)} unit="mmHg" />
             <p className="text-[8px] text-muted-foreground mt-0.5">60–100 mmHg</p>
           </div>
           <div>
-            <CalcField label="FiO₂" value={fio2} onChange={setFio2} unit="%" />
+            <CalcField label="FiO₂" value={fio2} onChange={(e) => setFio2(e.target.value)} unit="%" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Titular SpO₂ 92-96%</p>
           </div>
         </div>
@@ -660,19 +660,19 @@ const VentilatorioTab = () => {
           <p className="text-[9px] text-muted-foreground font-semibold mb-1.5 uppercase tracking-wider">Equilíbrio Ácido-Base</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
             <div>
-              <CalcField label="pH" value={ph} onChange={setPh} unit="" />
+              <CalcField label="pH" value={ph} onChange={(e) => setPh(e.target.value)} unit="" />
               <p className="text-[8px] text-muted-foreground mt-0.5">7.35–7.45</p>
             </div>
             <div>
-              <CalcField label="PaCO₂" value={paco2} onChange={setPaco2} unit="mmHg" />
+              <CalcField label="PaCO₂" value={paco2} onChange={(e) => setPaco2(e.target.value)} unit="mmHg" />
               <p className="text-[8px] text-muted-foreground mt-0.5">35–45</p>
             </div>
             <div>
-              <CalcField label="HCO₃⁻" value={hco3} onChange={setHco3} unit="mEq/L" />
+              <CalcField label="HCO₃⁻" value={hco3} onChange={(e) => setHco3(e.target.value)} unit="mEq/L" />
               <p className="text-[8px] text-muted-foreground mt-0.5">22–26</p>
             </div>
             <div>
-              <CalcField label="BE" value={be} onChange={setBe} unit="mEq/L" />
+              <CalcField label="BE" value={be} onChange={(e) => setBe(e.target.value)} unit="mEq/L" />
               <p className="text-[8px] text-muted-foreground mt-0.5">−2 a +2</p>
             </div>
           </div>
@@ -763,34 +763,34 @@ const VentilatorioTab = () => {
             info={<InfoTooltip interpretation="Parâmetros de mecânica ventilatória e trocas gasosas." />}>
             <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mb-3">
               <div>
-                <CalcField label="PIP" value={pip} onChange={setPip} unit="cmH₂O" />
+                <CalcField label="PIP" value={pip} onChange={(e) => setPip(e.target.value)} unit="cmH₂O" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Pressão Inspiratória de Pico</p>
               </div>
               <div>
-                <CalcField label="P. Platô" value={pPlat} onChange={setPPlat} unit="cmH₂O" />
+                <CalcField label="P. Platô" value={pPlat} onChange={(e) => setPPlat(e.target.value)} unit="cmH₂O" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Alvo ≤ 30</p>
               </div>
               <div>
-                <CalcField label="PEEP" value={peep} onChange={setPeep} unit="cmH₂O" />
+                <CalcField label="PEEP" value={peep} onChange={(e) => setPeep(e.target.value)} unit="cmH₂O" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Pressão Final Expiração</p>
               </div>
               <div>
-                <CalcField label="VC" value={vt} onChange={setVt} unit="mL" />
+                <CalcField label="VC" value={vt} onChange={(e) => setVt(e.target.value)} unit="mL" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">6 mL/kg PBW</p>
               </div>
               <div>
-                <CalcField label="FR" value={fr} onChange={setFr} unit="irpm" />
+                <CalcField label="FR" value={fr} onChange={(e) => setFr(e.target.value)} unit="irpm" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Frequência Respiratória</p>
               </div>
               <div>
-                <CalcField label="SpO₂" value={spo2} onChange={setSpo2} unit="%" />
+                <CalcField label="SpO₂" value={spo2} onChange={(e) => setSpo2(e.target.value)} unit="%" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Saturação Periférica</p>
               </div>
               <div>
-                <CalcField label="P0.1" value={p01} onChange={setP01} unit="cmH₂O" />
+                <CalcField label="P0.1" value={p01} onChange={(e) => setP01(e.target.value)} unit="cmH₂O" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Normal: 1.5–3.5</p>
               </div>
-              <CalcField label="Ti (insp)" value={ti} onChange={setTi} unit="seg" placeholder="auto" />
+              <CalcField label="Ti (insp)" value={ti} onChange={(e) => setTi(e.target.value)} unit="seg" placeholder="auto" />
             </div>
 
             {/* Results */}
@@ -908,7 +908,7 @@ const VentilatorioTab = () => {
                   <p className="text-[10px] font-semibold text-foreground mb-1">CPAP — Continuous Positive Airway Pressure</p>
                   <p className="text-[9px] text-muted-foreground">Pressão contínua. 1ª linha no EAP cardiogénico.</p>
                 </div>
-                <CalcField label="Pressão (CPAP)" value={cpapPressure} onChange={setCpapPressure} unit="cmH₂O" />
+                <CalcField label="Pressão (CPAP)" value={cpapPressure} onChange={(e) => setCpapPressure(e.target.value)} unit="cmH₂O" />
                 <p className="text-[9px] text-muted-foreground font-mono">Iniciar: 5–8 cmH₂O · Máx: 12–15</p>
               </div>
             )}
@@ -920,8 +920,8 @@ const VentilatorioTab = () => {
                   <p className="text-[9px] text-muted-foreground">PS = IPAP - EPAP</p>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
-                  <CalcField label="IPAP" value={ipap} onChange={setIpap} unit="cmH₂O" />
-                  <CalcField label="EPAP" value={epap} onChange={setEpap} unit="cmH₂O" />
+                  <CalcField label="IPAP" value={ipap} onChange={(e) => setIpap(e.target.value)} unit="cmH₂O" />
+                  <CalcField label="EPAP" value={epap} onChange={(e) => setEpap(e.target.value)} unit="cmH₂O" />
                 </div>
                 {parseFloat(ipap) > 0 && parseFloat(epap) > 0 && (
                   <p className="text-[10px] font-mono text-primary">PS: {(parseFloat(ipap) - parseFloat(epap)).toFixed(0)} cmH₂O</p>
@@ -934,10 +934,10 @@ const VentilatorioTab = () => {
           {/* VNI Monitoring */}
           <CollapsibleSection title="Monitorização — VNI">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-              <CalcField label="FR" value={vniFr} onChange={setVniFr} unit="irpm" />
-              <CalcField label="SpO₂" value={vniSpo2} onChange={setVniSpo2} unit="%" />
-              <CalcField label="FiO₂" value={vniFio2} onChange={setVniFio2} unit="%" />
-              <CalcField label="VC" value={vniVt} onChange={setVniVt} unit="mL" />
+              <CalcField label="FR" value={vniFr} onChange={(e) => setVniFr(e.target.value)} unit="irpm" />
+              <CalcField label="SpO₂" value={vniSpo2} onChange={(e) => setVniSpo2(e.target.value)} unit="%" />
+              <CalcField label="FiO₂" value={vniFio2} onChange={(e) => setVniFio2(e.target.value)} unit="%" />
+              <CalcField label="VC" value={vniVt} onChange={(e) => setVniVt(e.target.value)} unit="mL" />
             </div>
             {vniFr && parseFloat(vniFr) > 30 && <AlertBanner text={`FR ${vniFr} — Taquipneia sob VNI.`} level="warning" />}
             {vniSpo2 && parseFloat(vniSpo2) < 92 && <AlertBanner text={`SpO₂ ${vniSpo2}% — Hipoxemia.`} level="danger" />}
@@ -986,7 +986,7 @@ const VentilatorioTab = () => {
             info={<InfoTooltip interpretation="Fluxo aquecido/humidificado até 60 L/min. PEEP ~1 cmH₂O / 10 L/min." />}>
             <div className="grid grid-cols-2 gap-2 mb-3">
               <div>
-                <CalcField label="Fluxo" value={onafFlow} onChange={setOnafFlow} unit="L/min" />
+                <CalcField label="Fluxo" value={onafFlow} onChange={(e) => setOnafFlow(e.target.value)} unit="L/min" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Iniciar 30–50. Máx 60.</p>
               </div>
               <div>
@@ -1001,11 +1001,11 @@ const VentilatorioTab = () => {
           <CollapsibleSection title="Monitorização — ONAF">
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <CalcField label="FR" value={onafFr} onChange={setOnafFr} unit="irpm" />
+                <CalcField label="FR" value={onafFr} onChange={(e) => setOnafFr(e.target.value)} unit="irpm" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Frequência Respiratória</p>
               </div>
               <div>
-                <CalcField label="SpO₂" value={onafSpo2} onChange={setOnafSpo2} unit="%" />
+                <CalcField label="SpO₂" value={onafSpo2} onChange={(e) => setOnafSpo2(e.target.value)} unit="%" />
                 <p className="text-[8px] text-muted-foreground mt-0.5">Saturação sob ONAF</p>
               </div>
             </div>
@@ -1038,10 +1038,10 @@ const VentilatorioTab = () => {
       <CollapsibleSection title="Critérios de Light — Derrame Pleural"
         info={<InfoTooltip formula="Exsudato se ≥1: Prot pleural/sérica > 0.5 | LDH pleural/sérica > 0.6 | LDH pleural > ⅔ LSN sérico" interpretation="Distingue transudatos de exsudatos." />}>
         <div className="grid grid-cols-2 gap-3 mb-3">
-          <CalcField label="Proteínas Pleural" value={pleuralProt} onChange={setPleuralProt} unit="g/dL" />
-          <CalcField label="Proteínas Soro" value={serumProt} onChange={setSerumProt} unit="g/dL" />
-          <CalcField label="LDH Pleural" value={pleuralLDH} onChange={setPleuralLDH} unit="U/L" />
-          <CalcField label="LDH Soro" value={serumLDH} onChange={setSerumLDH} unit="U/L" />
+          <CalcField label="Proteínas Pleural" value={pleuralProt} onChange={(e) => setPleuralProt(e.target.value)} unit="g/dL" />
+          <CalcField label="Proteínas Soro" value={serumProt} onChange={(e) => setSerumProt(e.target.value)} unit="g/dL" />
+          <CalcField label="LDH Pleural" value={pleuralLDH} onChange={(e) => setPleuralLDH(e.target.value)} unit="U/L" />
+          <CalcField label="LDH Soro" value={serumLDH} onChange={(e) => setSerumLDH(e.target.value)} unit="U/L" />
         </div>
 
         {lightsCriteria && (

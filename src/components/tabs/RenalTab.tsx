@@ -115,11 +115,11 @@ const RenalTab = () => {
 
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <CalcField label="Creatinina Atual" value={creatinina} onChange={setCreatinina} unit="mg/dL" />
+            <CalcField label="Creatinina Atual" value={creatinina} onChange={(e) => setCreatinina(e.target.value)} unit="mg/dL" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Valor mais recente</p>
           </div>
           <div>
-            <CalcField label="Creatinina Basal" value={creatininaBasal} onChange={setCreatininaBasal} unit="mg/dL" />
+            <CalcField label="Creatinina Basal" value={creatininaBasal} onChange={(e) => setCreatininaBasal(e.target.value)} unit="mg/dL" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Valor pré-admissão / habitual</p>
           </div>
         </div>
@@ -191,11 +191,11 @@ const RenalTab = () => {
                 <InfoTooltip formula="(Qd + Qpre + Qpost + UF) / Peso" reference="Alvo: 20–25 mL/kg/h" />
               </div>
               <div className="grid grid-cols-3 gap-2 mb-2">
-                <CalcField label="Qb" value={qb} onChange={setQb} unit="mL/h" />
-                <CalcField label="Qd" value={qd} onChange={setQd} unit="mL/h" />
-                <CalcField label="Qpre" value={qpre} onChange={setQpre} unit="mL/h" />
-                <CalcField label="Qpost" value={qpost} onChange={setQpost} unit="mL/h" />
-                <CalcField label="UF" value={uf} onChange={setUf} unit="mL/h" />
+                <CalcField label="Qb" value={qb} onChange={(e) => setQb(e.target.value)} unit="mL/h" />
+                <CalcField label="Qd" value={qd} onChange={(e) => setQd(e.target.value)} unit="mL/h" />
+                <CalcField label="Qpre" value={qpre} onChange={(e) => setQpre(e.target.value)} unit="mL/h" />
+                <CalcField label="Qpost" value={qpost} onChange={(e) => setQpost(e.target.value)} unit="mL/h" />
+                <CalcField label="UF" value={uf} onChange={(e) => setUf(e.target.value)} unit="mL/h" />
               </div>
               {effluentDose !== null && (
                 <>
@@ -211,10 +211,10 @@ const RenalTab = () => {
             <div className="mb-4">
               <p className="text-[10px] text-muted-foreground font-semibold mb-2">Citrato</p>
               <div className="grid grid-cols-2 gap-2">
-                <CalcField label="Ca²⁺ sistémico" value={caSys} onChange={setCaSys} unit="mmol/L" />
-                <CalcField label="Ca²⁺ pós-filtro" value={caPost} onChange={setCaPost} unit="mmol/L" />
-                <CalcField label="Ca total" value={caTotal} onChange={setCaTotal} unit="mg/dL" />
-                <CalcField label="Ca ionizado" value={caIonized} onChange={setCaIonized} unit="mmol/L" />
+                <CalcField label="Ca²⁺ sistémico" value={caSys} onChange={(e) => setCaSys(e.target.value)} unit="mmol/L" />
+                <CalcField label="Ca²⁺ pós-filtro" value={caPost} onChange={(e) => setCaPost(e.target.value)} unit="mmol/L" />
+                <CalcField label="Ca total" value={caTotal} onChange={(e) => setCaTotal(e.target.value)} unit="mg/dL" />
+                <CalcField label="Ca ionizado" value={caIonized} onChange={(e) => setCaIonized(e.target.value)} unit="mmol/L" />
               </div>
               {caPost && parseFloat(caPost) > 0.35 && <AlertBanner text={`Ca²⁺ pós-filtro ${caPost} (> 0.35) — ↑ citrato.`} level="warning" />}
               {caRatio !== null && caRatio > 2.5 && <AlertBanner text={`Rácio Ca total/ionizado = ${caRatio.toFixed(2)} (> 2.5) — TOXICIDADE citrato!`} level="danger" />}
@@ -222,7 +222,7 @@ const RenalTab = () => {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <CalcField label="TMP" value={tmp} onChange={setTmp} unit="mmHg" />
+                <CalcField label="TMP" value={tmp} onChange={(e) => setTmp(e.target.value)} unit="mmHg" />
                 {tmp && parseFloat(tmp) > 200 && <AlertBanner text={`TMP ${tmp} (> 200) — Coagulação do filtro.`} level="danger" />}
               </div>
             </div>
@@ -235,11 +235,11 @@ const RenalTab = () => {
         info={<InfoTooltip formula="DU = Volume / Horas / Peso" reference="≥ 0.5 mL/kg/h" />}>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <CalcField label="Volume Diurese" value={urine24h} onChange={setUrine24h} unit="mL" />
+            <CalcField label="Volume Diurese" value={urine24h} onChange={(e) => setUrine24h(e.target.value)} unit="mL" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Volume recolhido</p>
           </div>
           <div>
-            <CalcField label="Horas colheita" value={urineHours} onChange={setUrineHours} unit="h" />
+            <CalcField label="Horas colheita" value={urineHours} onChange={(e) => setUrineHours(e.target.value)} unit="h" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Duração (ex: 8h, 24h)</p>
           </div>
         </div>

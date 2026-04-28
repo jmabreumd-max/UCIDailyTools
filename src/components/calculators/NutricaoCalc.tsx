@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Utensils } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,14 +15,28 @@ export interface CalculatorProps {
 }
 
 const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [sexo, setSexo] = useState<"M" | "F">("M");
-  const [altura, setAltura] = useState(defaultValues?.altura || "");
-  const [pesoAtual, setPesoAtual] = useState(defaultValues?.pesoAtual || "");
-  const [propofolRate, setPropofolRate] = useState(defaultValues?.propofolRate || "");
-  const [propofolConc, setPropofolConc] = useState<"1" | "2">("1");
-  const [metaCal, setMetaCal] = useState("25");
-  const [metaProt, setMetaProt] = useState("1.5");
+  const p = usePatient();
 
+  const calcSchema = z.object({
+    altura: calcFieldValidator(),
+    sexo: z.string().optional(),
+    pesoAtual: calcFieldValidator(),
+    metaCal: calcFieldValidator(),
+    metaProt: calcFieldValidator(),
+    propofolRate: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    altura: { global: p.altura, setGlobal: p.setAltura },
+    pesoAtual: { global: p.pesoAtual, setGlobal: p.setPesoAtual }
+  });
+  const { register, formState: { errors }, watch, setValue } = form;
+  const altura = watch("altura");
+  const sexo = watch("sexo") ?? "M";
+  const pesoAtual = watch("pesoAtual");
+  const propofolRate = watch("propofolRate");
+  const metaCal = watch("metaCal") ?? "25";
+  const metaProt = watch("metaProt") ?? "1.5";
+  
   const ibw = useMemo(() => {
     const h = parseFloat(altura);
     if (!h || h < 100 || h > 250) return null;
@@ -104,7 +121,7 @@ const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       {/* Sexo */}
       <div className="flex gap-2">
         <button
-          onClick={() => setSexo("M")}
+          onClick={() => setValue("sexo", "M")}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             sexo === "M"
               ? "bg-primary/20 text-primary border border-primary/30"
@@ -114,7 +131,7 @@ const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
           ♂ Masculino
         </button>
         <button
-          onClick={() => setSexo("F")}
+          onClick={() => setValue("sexo", "F")}
           className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
             sexo === "F"
               ? "bg-primary/20 text-primary border border-primary/30"
@@ -127,8 +144,8 @@ const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
 
       {/* Dados antropométricos */}
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Altura" value={altura} onChange={setAltura} unit="cm" />
-        <CalcField label="Peso Atual" value={pesoAtual} onChange={setPesoAtual} unit="kg" />
+        <CalcField label="Altura" {...register("altura")} error={errors.altura?.message as string} unit="cm" />
+        <CalcField label="Peso Atual" {...register("pesoAtual")} error={errors.pesoAtual?.message as string} unit="kg" />
       </div>
 
       {/* Pesos calculados */}
@@ -167,8 +184,8 @@ const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
 
       {/* Metas */}
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Meta calórica" value={metaCal} onChange={setMetaCal} unit="kcal/kg/d" />
-        <CalcField label="Meta proteica" value={metaProt} onChange={setMetaProt} unit="g/kg/d" />
+        <CalcField label="Meta calórica" {...register("metaCal")} error={errors.metaCal?.message as string} unit="kcal/kg/d" />
+        <CalcField label="Meta proteica" {...register("metaProt")} error={errors.metaProt?.message as string} unit="g/kg/d" />
       </div>
       <p className="text-[10px] text-muted-foreground font-mono -mt-1">
         📌 Agudo: 15–20 kcal/kg | Estável: 25–30 kcal/kg | Proteína: 1.2–2.0 g/kg
@@ -177,29 +194,8 @@ const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       {/* Propofol */}
       <div className="space-y-2">
         <label className="calc-label">Propofol em uso? (subtrai calorias lipídicas)</label>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setPropofolConc("1")}
-            className={`flex-1 py-1 rounded-lg text-[11px] font-medium transition-all ${
-              propofolConc === "1"
-                ? "bg-primary/20 text-primary border border-primary/30"
-                : "bg-muted text-muted-foreground border border-border"
-            }`}
-          >
-            1% (10mg/mL)
-          </button>
-          <button
-            onClick={() => setPropofolConc("2")}
-            className={`flex-1 py-1 rounded-lg text-[11px] font-medium transition-all ${
-              propofolConc === "2"
-                ? "bg-primary/20 text-primary border border-primary/30"
-                : "bg-muted text-muted-foreground border border-border"
-            }`}
-          >
-            2% (20mg/mL)
-          </button>
-        </div>
-        <CalcField label="Vazão Propofol" value={propofolRate} onChange={setPropofolRate} unit="mL/h" />
+        <span className="text-[11px] text-muted-foreground block -mt-1">Assumindo Propofol 2% (perfusão)</span>
+        <CalcField label="Vazão Propofol" {...register("propofolRate")} error={errors.propofolRate?.message as string} unit="mL/h" />
         {propofolKcal !== null && propofolKcal > 0 && (
           <p className="text-[10px] text-warning font-mono text-center">
             ⚡ Propofol: {propofolKcal.toFixed(0)} kcal/dia (1.1 kcal/mL de emulsão lipídica)

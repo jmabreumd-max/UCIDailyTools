@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Gauge } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,9 +15,24 @@ export interface CalculatorProps {
 }
 
 const ComplacenciaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [vc, setVc] = useState(defaultValues?.vc || "");
-  const [pplato, setPplato] = useState(defaultValues?.pplato || "");
-  const [peep, setPeep] = useState(defaultValues?.peep || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    vc: calcFieldValidator(),
+  pplato: calcFieldValidator(),
+  peep: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+
+  });
+  const { register, formState: { errors } } = form;
+  const vc = form.watch("vc");
+  const pplato = form.watch("pplato");
+  const peep = form.watch("peep");
+  
+  
+  
+  
 
   const resultado = useMemo(() => {
     const v = parseFloat(vc);
@@ -49,9 +67,9 @@ const ComplacenciaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Avalia gravidade da lesão pulmonar e resposta ao recrutamento. Valores baixos indicam pulmão restritivo (SDRA, fibrose)."
     >
       <div className="grid grid-cols-3 gap-2">
-        <CalcField label="VC" value={vc} onChange={setVc} unit="mL" />
-        <CalcField label="P. Platô" value={pplato} onChange={setPplato} unit="cmH₂O" />
-        <CalcField label="PEEP" value={peep} onChange={setPeep} unit="cmH₂O" />
+        <CalcField label="VC" {...register("vc")} error={errors.vc?.message as string} unit="mL" />
+        <CalcField label="P. Platô" {...register("pplato")} error={errors.pplato?.message as string} unit="cmH₂O" />
+        <CalcField label="PEEP" {...register("peep")} error={errors.peep?.message as string} unit="cmH₂O" />
       </div>
       <CalcResult label="Cst" value={resultado} unit="mL/cmH₂O" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

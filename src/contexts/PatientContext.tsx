@@ -14,14 +14,32 @@ interface PatientContextType {
   rrtType: string; setRrtType: (v: string) => void;
   propofolRateMlH: string; setPropofolRateMlH: (v: string) => void;
   weightReference: "atual" | "ideal" | "ajustado"; setWeightReference: (v: "atual" | "ideal" | "ajustado") => void;
-  // Shared labs for cross-tab integration
+  // Hematologia
+  hemoglobina: string; setHemoglobina: (v: string) => void;
   plaquetas: string; setPlaquetas: (v: string) => void;
-  bilirrubina: string; setBilirrubina: (v: string) => void;
   inr: string; setInr: (v: string) => void;
-  lactato: string; setLactato: (v: string) => void;
-  // Respiratory parameters for SOFA
+  
+  // Bioquímica
+  creatinina: string; setCreatinina: (v: string) => void;
+  creatininaBasal: string; setCreatininaBasal: (v: string) => void;
+  ureia: string; setUreia: (v: string) => void;
+  sodio: string; setSodio: (v: string) => void;
+  potassio: string; setPotassio: (v: string) => void;
+  cloro: string; setCloro: (v: string) => void;
+  calcioTotal: string; setCalcioTotal: (v: string) => void;
+  magnesio: string; setMagnesio: (v: string) => void;
+  fosforo: string; setFosforo: (v: string) => void;
+  glicemia: string; setGlicemia: (v: string) => void;
+  albumina: string; setAlbumina: (v: string) => void;
+  bilirrubina: string; setBilirrubina: (v: string) => void;
+  
+  // Gasimetria e Respiratório
+  ph: string; setPh: (v: string) => void;
+  pco2: string; setPco2: (v: string) => void;
   pao2: string; setPao2: (v: string) => void;
   fio2: string; setFio2: (v: string) => void;
+  hco3: string; setHco3: (v: string) => void;
+  lactato: string; setLactato: (v: string) => void;
   // ECMO
   ecmoType: "" | "VV" | "VA"; setEcmoType: (v: "" | "VV" | "VA") => void;
   ecmoParams: EcmoParams; setEcmoParams: (v: EcmoParams) => void;
@@ -118,23 +136,37 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
   const [altura, setAltura] = useState(saved?.altura ?? "");
   const [idade, setIdade] = useState(saved?.idade ?? "");
   const [sexo, setSexo] = useState<"" | "M" | "F">(saved?.sexo ?? "");
-  const [creatinina, setCreatinina] = useState(saved?.creatinina ?? "");
-  const [creatininaBasal, setCreatininaBasal] = useState(saved?.creatininaBasal ?? "");
-  const [albumina, setAlbumina] = useState(saved?.albumina ?? "");
   const [onRRT, setOnRRT] = useState(saved?.onRRT ?? false);
   const [rrtType, setRrtType] = useState(saved?.rrtType ?? "CVVHDF");
   const [propofolRateMlH, setPropofolRateMlH] = useState(saved?.propofolRateMlH ?? "");
   const [weightReference, setWeightReference] = useState<"atual" | "ideal" | "ajustado">(saved?.weightReference ?? "ideal");
 
-  // Shared labs
+  // Hematologia
+  const [hemoglobina, setHemoglobina] = useState(saved?.hemoglobina ?? "");
   const [plaquetas, setPlaquetas] = useState(saved?.plaquetas ?? "");
-  const [bilirrubina, setBilirrubina] = useState(saved?.bilirrubina ?? "");
   const [inr, setInr] = useState(saved?.inr ?? "");
-  const [lactato, setLactato] = useState(saved?.lactato ?? "");
 
-  // Respiratory
+  // Bioquímica
+  const [creatinina, setCreatinina] = useState(saved?.creatinina ?? "");
+  const [creatininaBasal, setCreatininaBasal] = useState(saved?.creatininaBasal ?? "");
+  const [ureia, setUreia] = useState(saved?.ureia ?? "");
+  const [sodio, setSodio] = useState(saved?.sodio ?? "");
+  const [potassio, setPotassio] = useState(saved?.potassio ?? "");
+  const [cloro, setCloro] = useState(saved?.cloro ?? "");
+  const [calcioTotal, setCalcioTotal] = useState(saved?.calcioTotal ?? "");
+  const [magnesio, setMagnesio] = useState(saved?.magnesio ?? "");
+  const [fosforo, setFosforo] = useState(saved?.fosforo ?? "");
+  const [glicemia, setGlicemia] = useState(saved?.glicemia ?? "");
+  const [albumina, setAlbumina] = useState(saved?.albumina ?? "");
+  const [bilirrubina, setBilirrubina] = useState(saved?.bilirrubina ?? "");
+
+  // Gasimetria e Respiratório
+  const [ph, setPh] = useState(saved?.ph ?? "");
+  const [pco2, setPco2] = useState(saved?.pco2 ?? "");
   const [pao2, setPao2] = useState(saved?.pao2 ?? "");
   const [fio2, setFio2] = useState(saved?.fio2 ?? "");
+  const [hco3, setHco3] = useState(saved?.hco3 ?? "");
+  const [lactato, setLactato] = useState(saved?.lactato ?? "");
 
   // ECMO
   const [ecmoType, setEcmoType] = useState<"" | "VV" | "VA">(saved?.ecmoType ?? "");
@@ -212,8 +244,13 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
     setPesoAtual(""); setAltura(""); setIdade(""); setSexo("");
     setCreatinina(""); setCreatininaBasal(""); setAlbumina(""); setOnRRT(false); setRrtType("CVVHDF");
     setPropofolRateMlH(""); setWeightReference("ideal");
-    setPlaquetas(""); setBilirrubina(""); setInr(""); setLactato("");
-    setPao2(""); setFio2("");
+    
+    setHemoglobina(""); setPlaquetas(""); setInr("");
+    setUreia(""); setSodio(""); setPotassio(""); setCloro("");
+    setCalcioTotal(""); setMagnesio(""); setFosforo(""); setGlicemia(""); setBilirrubina("");
+    
+    setPh(""); setPco2(""); setHco3(""); setPao2(""); setFio2(""); setLactato("");
+    
     setEcmoType(""); setEcmoParams(defaultEcmoParams);
     setGcsTotal(0); setPamCardio("");
     localStorage.removeItem(LS_KEY);
@@ -229,12 +266,24 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
     const data = {
       pesoAtual, altura, idade, sexo, creatinina, creatininaBasal, albumina,
       onRRT, rrtType, propofolRateMlH, weightReference,
-      plaquetas, bilirrubina, inr, lactato, pao2, fio2,
+      
+      hemoglobina, plaquetas, inr,
+      ureia, sodio, potassio, cloro, calcioTotal, magnesio, fosforo, glicemia, bilirrubina,
+      ph, pco2, pao2, fio2, hco3, lactato,
+      
       ecmoType, ecmoParams,
       gcsTotal, pamCardio,
     };
     localStorage.setItem(LS_KEY, JSON.stringify(data));
-  }, [pesoAtual, altura, idade, sexo, creatinina, creatininaBasal, albumina, onRRT, rrtType, propofolRateMlH, weightReference, plaquetas, bilirrubina, inr, lactato, pao2, fio2, ecmoType, ecmoParams, gcsTotal, pamCardio]);
+  }, [
+    pesoAtual, altura, idade, sexo, creatinina, creatininaBasal, albumina,
+    onRRT, rrtType, propofolRateMlH, weightReference,
+    hemoglobina, plaquetas, inr,
+    ureia, sodio, potassio, cloro, calcioTotal, magnesio, fosforo, glicemia, bilirrubina,
+    ph, pco2, pao2, fio2, hco3, lactato,
+    ecmoType, ecmoParams,
+    gcsTotal, pamCardio
+  ]);
 
   return (
     <PatientContext.Provider value={{
@@ -242,8 +291,13 @@ export const PatientProvider = ({ children }: { children: ReactNode }) => {
       creatinina, setCreatinina, creatininaBasal, setCreatininaBasal,
       albumina, setAlbumina, onRRT, setOnRRT, rrtType, setRrtType,
       propofolRateMlH, setPropofolRateMlH, weightReference, setWeightReference,
-      plaquetas, setPlaquetas, bilirrubina, setBilirrubina, inr, setInr, lactato, setLactato,
-      pao2, setPao2, fio2, setFio2,
+      
+      hemoglobina, setHemoglobina, plaquetas, setPlaquetas, inr, setInr,
+      ureia, setUreia, sodio, setSodio, potassio, setPotassio, cloro, setCloro,
+      calcioTotal, setCalcioTotal, magnesio, setMagnesio, fosforo, setFosforo,
+      glicemia, setGlicemia, bilirrubina, setBilirrubina,
+      ph, setPh, pco2, setPco2, pao2, setPao2, fio2, setFio2, hco3, setHco3, lactato, setLactato,
+      
       ecmoType, setEcmoType, ecmoParams, setEcmoParams,
       gcsTotal, setGcsTotal, pamCardio, setPamCardio,
       pesoIdeal, pesoAjustado, pesoReferencia, imc, clCr, clCrStage, akiStage, pfRatio, clearPatient,

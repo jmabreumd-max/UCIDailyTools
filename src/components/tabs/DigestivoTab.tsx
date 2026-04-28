@@ -198,7 +198,7 @@ const DigestivoTab = () => {
         {/* Bilirrubina */}
         <CollapsibleSection title="Bilirrubina"
           info={<InfoTooltip reference="Normal: < 1.2 mg/dL" interpretation="Partilhada com SOFA e Child-Pugh. > 2: icterícia. > 6: disfunção hepática significativa." />}>
-          <CalcField label="Bilirrubina" value={bilirrubina} onChange={setBilirrubina} unit="mg/dL" />
+          <CalcField label="Bilirrubina" value={bilirrubina} onChange={(e) => setBilirrubina(e.target.value)} unit="mg/dL" />
           {bili > 0 && (
             <Interpretation status={bili >= 6 ? "danger" : bili >= 2 ? "warning" : "normal"}
               text={bili >= 6 ? `Disfunção hepática.`
@@ -210,7 +210,7 @@ const DigestivoTab = () => {
         {/* Albumina */}
         <CollapsibleSection title="Albumina"
           info={<InfoTooltip reference="Normal: 3.5–5.0 g/dL" interpretation="Alb < 4.0 → correção fenitoína. < 3.5: hipoalbuminemia." />}>
-          <CalcField label="Albumina" value={albumina} onChange={setAlbumina} unit="g/dL" />
+          <CalcField label="Albumina" value={albumina} onChange={(e) => setAlbumina(e.target.value)} unit="g/dL" />
           {albAlert && <AlertBanner text={`< 4.0 — Correção FTO.`} level="warning" />}
         </CollapsibleSection>
       </div>
@@ -261,8 +261,8 @@ const DigestivoTab = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-2">
-          <CalcField label="kcal/kg/dia" value={metaCal} onChange={setMetaCal} unit="kcal/kg" />
-          <CalcField label="Proteína/kg/dia" value={metaProt} onChange={setMetaProt} unit="g/kg" />
+          <CalcField label="kcal/kg/dia" value={metaCal} onChange={(e) => setMetaCal(e.target.value)} unit="kcal/kg" />
+          <CalcField label="Proteína/kg/dia" value={metaProt} onChange={(e) => setMetaProt(e.target.value)} unit="g/kg" />
         </div>
         <p className="text-[9px] text-muted-foreground font-mono mb-3">Agudo D1-D3: 15–20 · Estável: 25–30 kcal/kg</p>
 
@@ -338,8 +338,8 @@ const DigestivoTab = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-3">
-          <CalcField label="Ritmo" value={enteralRate} onChange={setEnteralRate} unit="mL/h" placeholder="ex: 42" />
-          <CalcField label="Horas/dia" value={enteralHours} onChange={setEnteralHours} unit="h" />
+          <CalcField label="Ritmo" value={enteralRate} onChange={(e) => setEnteralRate(e.target.value)} unit="mL/h" placeholder="ex: 42" />
+          <CalcField label="Horas/dia" value={enteralHours} onChange={(e) => setEnteralHours(e.target.value)} unit="h" />
         </div>
 
         {suggestedRate !== null && targetKcal > 0 && (
@@ -454,8 +454,8 @@ const DigestivoTab = () => {
       <CollapsibleSection title="GASA"
         info={<InfoTooltip formula="Alb Soro − Alb Ascite" reference="≥ 1.1: Hipertensão portal" />}>
         <div className="grid grid-cols-2 gap-3">
-          <CalcField label="Alb. Soro" value={albSoro} onChange={setAlbSoro} unit="g/dL" />
-          <CalcField label="Alb. Ascite" value={albAscite} onChange={setAlbAscite} unit="g/dL" />
+          <CalcField label="Alb. Soro" value={albSoro} onChange={(e) => setAlbSoro(e.target.value)} unit="g/dL" />
+          <CalcField label="Alb. Ascite" value={albAscite} onChange={(e) => setAlbAscite(e.target.value)} unit="g/dL" />
         </div>
         {gasa !== null && (
           <>

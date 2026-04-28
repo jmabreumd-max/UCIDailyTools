@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { usePatient } from "@/contexts/PatientContext";
 import CalcField from "./CalcField";
 import CalcResult from "./CalcResult";
@@ -62,17 +62,17 @@ const UniversalInfusionConverter = ({
 
   const [minDose, maxDose] = parsedRange;
 
-  const calcRate = (dose: number) => {
+  const calcRate = useCallback((dose: number) => {
     const w = isPerKg ? peso : 1;
     const mgPerHour = isPerMin ? (dose * w * 60) / factor : (dose * w) / factor;
     return activeConc.mgPerMl > 0 ? mgPerHour / activeConc.mgPerMl : 0;
-  };
+  }, [isPerKg, peso, isPerMin, factor, activeConc.mgPerMl]);
 
-  const calcDose = (rate: number) => {
+  const calcDose = useCallback((rate: number) => {
     const mgPerHour = rate * activeConc.mgPerMl;
-    const w = isPerKg ? (peso || 1) : 1; // avoid division by zero when peso is missing but formula needs it
+    const w = isPerKg ? (peso || 1) : 1;
     return isPerMin ? (mgPerHour * factor) / (w * 60) : (mgPerHour * factor) / w;
-  };
+  }, [activeConc.mgPerMl, isPerKg, peso, isPerMin, factor]);
 
   const result = useMemo(() => {
     const val = parseFloat(inputValue);
@@ -88,7 +88,7 @@ const UniversalInfusionConverter = ({
       const dose = calcDose(val);
       return { label: "Dose", value: dose.toFixed(3), unit: doseUnit, numericValue: dose };
     }
-  }, [inputValue, peso, activeConc, mode, isPerKg, needsWeight, doseUnit, onRateChange]);
+  }, [inputValue, peso, activeConc.mgPerMl, mode, isPerKg, needsWeight, doseUnit, onRateChange, calcRate, calcDose]);
 
   const isOutOfRange = result !== null && (result.numericValue < minDose || result.numericValue > maxDose);
   
@@ -126,8 +126,8 @@ const UniversalInfusionConverter = ({
 
         {isCustomConc && (
           <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-border/50">
-            <CalcField label="Fármaco (mg)" value={customMg} onChange={setCustomMg} unit="mg" />
-            <CalcField label="Volume (mL)" value={customMl} onChange={setCustomMl} unit="mL" />
+            <CalcField label="Fármaco (mg)" value={customMg} onChange={(e) => setCustomMg(e.target.value)} unit="mg" />
+            <CalcField label="Volume (mL)" value={customMl} onChange={(e) => setCustomMl(e.target.value)} unit="mL" />
           </div>
         )}
         {!isCustomConc && concentrations.length === 1 && (
@@ -150,7 +150,7 @@ const UniversalInfusionConverter = ({
         <CalcField
           label={mode === "dose_to_rate" ? `Dose Alvo (${doseUnit})` : "Vazão Bomba (mL/h)"}
           value={inputValue}
-          onChange={setInputValue}
+          onChange={(e) => setInputValue(e.target.value)}
           unit={mode === "dose_to_rate" ? doseUnit : "mL/h"}
         />
       </div>

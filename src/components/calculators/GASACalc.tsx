@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { FlaskConical } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,21 @@ export interface CalculatorProps {
 }
 
 const GASACalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [albSoro, setAlbSoro] = useState(defaultValues?.albSoro || "");
-  const [albAscite, setAlbAscite] = useState(defaultValues?.albAscite || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    albSoro: calcFieldValidator(),
+  albAscite: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+
+  });
+  const { register, formState: { errors } } = form;
+  const albSoro = form.watch("albSoro");
+  const albAscite = form.watch("albAscite");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const s = parseFloat(albSoro);
@@ -45,8 +61,8 @@ const GASACalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Substituiu a classificação transudato/exsudato. GASA ≥ 1.1 indica hipertensão portal com ~97% de acurácia."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Albumina Sérica" value={albSoro} onChange={setAlbSoro} unit="g/dL" />
-        <CalcField label="Albumina Ascítica" value={albAscite} onChange={setAlbAscite} unit="g/dL" />
+        <CalcField label="Albumina Sérica" {...register("albSoro")} error={errors.albSoro?.message as string} unit="g/dL" />
+        <CalcField label="Albumina Ascítica" {...register("albAscite")} error={errors.albAscite?.message as string} unit="g/dL" />
       </div>
       <CalcResult label="GASA" value={resultado} unit="g/dL" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

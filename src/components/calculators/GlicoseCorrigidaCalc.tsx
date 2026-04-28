@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Droplets } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,22 @@ export interface CalculatorProps {
 }
 
 const GlicoseCorrigidaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [glicose, setGlicose] = useState(defaultValues?.glicose || "");
-  const [sodio, setSodio] = useState(defaultValues?.sodio || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    glicose: calcFieldValidator(),
+  sodio: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    glicose: { global: p.glicemia, setGlobal: p.setGlicemia },
+    sodio: { global: p.sodio, setGlobal: p.setSodio }
+  });
+  const { register, formState: { errors } } = form;
+  const glicose = form.watch("glicose");
+  const sodio = form.watch("sodio");
+  
+  
+  
 
   const naCorrResult = useMemo(() => {
     const gli = parseFloat(glicose);
@@ -59,8 +76,8 @@ const GlicoseCorrigidaCalc = ({ schema, defaultValues }: CalculatorProps = {}) =
       rationale="Evita diagnóstico errôneo de hiponatremia em cetoacidose/EHH. O Na⁺ verdadeiro pode estar normal ou elevado apesar de Na⁺ medido baixo."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Glicemia" value={glicose} onChange={setGlicose} unit="mg/dL" />
-        <CalcField label="Na⁺ sérico" value={sodio} onChange={setSodio} unit="mEq/L" />
+        <CalcField label="Glicemia" {...register("glicose")} error={errors.glicose?.message as string} unit="mg/dL" />
+        <CalcField label="Na⁺ sérico" {...register("sodio")} error={errors.sodio?.message as string} unit="mEq/L" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <CalcResult label="Na⁺ Corrigido" value={naCorrResult} unit="mEq/L" status={status} />

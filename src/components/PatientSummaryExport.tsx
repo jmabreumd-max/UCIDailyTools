@@ -558,8 +558,8 @@ const PatientSummaryExport = () => {
     pesoAtual, altura, idade, sexo, pesoIdeal, pesoAjustado, pesoReferencia, imc,
     weightReference, creatinina, creatininaBasal, albumina, onRRT, rrtType,
     plaquetas, bilirrubina, inr, lactato,
-    pao2, fio2, pfRatio, gcsTotal, pamCardio,
-    clCr, clCrStage, akiStage, ecmoType, refreshKey,
+    pao2, fio2, pfRatio, pamCardio,
+    clCr, clCrStage, akiStage, ecmoType,
   ]);
 
   const handleCopy = async () => {

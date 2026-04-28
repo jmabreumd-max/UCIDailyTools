@@ -1,74 +1,26 @@
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import React, { forwardRef } from "react";
 import { cn } from "@/lib/utils";
 
-interface CalcFieldProps {
+export interface CalcFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
-  value: string;
-  onChange: (v: string) => void;
   unit?: string;
-  placeholder?: string;
-  type?: string;
-  min?: number;
-  max?: number;
-  step?: number | string;
-  schema?: z.ZodType<any>;
+  error?: string | null;
 }
 
-const CalcField = ({ 
+const CalcField = forwardRef<HTMLInputElement, CalcFieldProps>(({ 
   label, 
-  value, 
-  onChange, 
   unit, 
-  placeholder, 
+  error,
+  className,
   type = "number",
-  min,
-  max,
-  schema: customSchema 
-}: CalcFieldProps) => {
+  onChange,
+  ...props 
+}, ref) => {
 
-  // Definir um esquema base usando Zod caso não seja fornecido um customizado
-  const schema = customSchema || z.object({
-    val: z.string().refine((val) => {
-      if (!val) return true; // Permite vazio (reset)
-      if (type === "number") {
-        const num = parseFloat(val);
-        if (isNaN(num)) return false;
-        if (min !== undefined && num < min) return false;
-        if (max !== undefined && num > max) return false;
-      }
-      return true;
-    }, {
-      message: min !== undefined && max !== undefined 
-        ? `Valor entre ${min} e ${max}`
-        : min !== undefined 
-          ? `Mínimo ${min}`
-          : max !== undefined
-            ? `Máximo ${max}`
-            : "Valor inválido"
-    })
-  });
-
-  const { register, setValue, trigger, formState: { errors } } = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: { val: value },
-    mode: "onChange"
-  });
-
-  // Manter o formulário interno sincronizado com o valor externo (Ex: Limpeza de formulário)
-  useEffect(() => {
-    setValue("val", value);
-    if (value) {
-      trigger("val");
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e);
     }
-  }, [value, setValue, trigger]);
-
-  const internalOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVal = e.target.value;
-    setValue("val", newVal, { shouldValidate: true });
-    onChange(newVal);
   };
 
   return (
@@ -76,15 +28,16 @@ const CalcField = ({
       <label className="calc-label">{label}</label>
       <div className="relative">
         <input
+          ref={ref}
           type={type}
-          {...register("val")}
-          value={value}
-          onChange={internalOnChange}
-          placeholder={placeholder || "0"}
           className={cn(
-            "calc-input pr-12 transition-colors",
-            errors.val && "border-red-500 focus:ring-red-500/40 focus:border-red-500"
+            "calc-input transition-colors",
+            unit && "pr-12",
+            error && "border-red-500 focus:ring-red-500/40 focus:border-red-500",
+            className
           )}
+          onChange={handleChange}
+          {...props}
         />
         {unit && (
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-mono">
@@ -92,13 +45,18 @@ const CalcField = ({
           </span>
         )}
       </div>
-      {errors.val && (
+      {error && (
         <span className="text-red-500 text-[10px] mt-1 block font-medium">
-          {errors.val.message as string}
+          {error}
         </span>
       )}
     </div>
   );
-};
+});
+
+CalcField.displayName = "CalcField";
 
 export default CalcField;
+
+
+

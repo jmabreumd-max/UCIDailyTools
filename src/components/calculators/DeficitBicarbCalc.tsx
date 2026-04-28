@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Minus } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,9 +15,24 @@ export interface CalculatorProps {
 }
 
 const DeficitBicarbCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [peso, setPeso] = useState(defaultValues?.peso || "");
-  const [hco3Atual, setHco3Atual] = useState(defaultValues?.hco3Atual || "");
-  const [hco3Desejado, setHco3Desejado] = useState("24");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    peso: calcFieldValidator(),
+    hco3Atual: calcFieldValidator(),
+    hco3Desejado: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    peso: { global: p.pesoAtual, setGlobal: p.setPesoAtual }
+  });
+  
+  // Set default manually if not synced or provided via schema defaults
+  // Actually, wait, useCalculatorForm supports defaultValues. But easier to do local state or just provide a default value effect.
+  // We can just use setValue if it's empty, but the easiest is just having the schema... let's just make sure it's watched.
+  const { register, formState: { errors }, watch, setValue } = form;
+  const peso = watch("peso");
+  const hco3Atual = watch("hco3Atual");
+  const hco3Desejado = watch("hco3Desejado") ?? "24";
 
   const resultado = useMemo(() => {
     const p = parseFloat(peso);
@@ -55,9 +73,9 @@ const DeficitBicarbCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Guia a reposição de NaHCO₃ em acidose metabólica grave (pH < 7.1). Reposição deve ser parcial (50%) com reavaliação gasométrica."
     >
       <div className="grid grid-cols-3 gap-2">
-        <CalcField label="Peso" value={peso} onChange={setPeso} unit="kg" />
-        <CalcField label="HCO₃ atual" value={hco3Atual} onChange={setHco3Atual} unit="mEq/L" />
-        <CalcField label="HCO₃ alvo" value={hco3Desejado} onChange={setHco3Desejado} unit="mEq/L" />
+        <CalcField label="Peso" {...register("peso")} error={errors.peso?.message as string} unit="kg" />
+        <CalcField label="HCO₃ atual" {...register("hco3Atual")} error={errors.hco3Atual?.message as string} unit="mEq/L" />
+        <CalcField label="HCO₃ alvo" {...register("hco3Desejado")} error={errors.hco3Desejado?.message as string} unit="mEq/L" placeholder="24" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <CalcResult label="Déficit" value={resultado} unit="mEq" status={status} />

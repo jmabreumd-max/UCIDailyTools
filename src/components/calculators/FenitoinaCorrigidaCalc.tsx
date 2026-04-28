@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Pill } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,21 @@ export interface CalculatorProps {
 }
 
 const FenitoinaCorrigidaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [fenitoina, setFenitoina] = useState(defaultValues?.fenitoina || "");
-  const [albumina, setAlbumina] = useState(defaultValues?.albumina || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    albumina: calcFieldValidator(),
+  fenitoina: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    albumina: { global: p.albumina, setGlobal: p.setAlbumina }
+  });
+  const { register, formState: { errors } } = form;
+  const albumina = form.watch("albumina");
+  const fenitoina = form.watch("fenitoina");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const f = parseFloat(fenitoina);
@@ -47,8 +63,8 @@ const FenitoinaCorrigidaCalc = ({ schema, defaultValues }: CalculatorProps = {})
       rationale="Na UTI, hipoalbuminemia é comum e eleva a fração livre de fenitoína. O nível total pode parecer normal mas estar tóxico. A correção evita sub ou superdosagem."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Fenitoína Medida" value={fenitoina} onChange={setFenitoina} unit="mcg/mL" />
-        <CalcField label="Albumina" value={albumina} onChange={setAlbumina} unit="g/dL" />
+        <CalcField label="Fenitoína Medida" {...register("fenitoina")} error={errors.fenitoina?.message as string} unit="mcg/mL" />
+        <CalcField label="Albumina" {...register("albumina")} error={errors.albumina?.message as string} unit="g/dL" />
       </div>
       <CalcResult label="Fenitoína Corrigida" value={resultado} unit="mcg/mL" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

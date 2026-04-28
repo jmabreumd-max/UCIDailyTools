@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Wind } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,9 +15,24 @@ export interface CalculatorProps {
 }
 
 const ROXIndexCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [spo2, setSpo2] = useState(defaultValues?.spo2 || "");
-  const [fio2, setFio2] = useState(defaultValues?.fio2 || "");
-  const [fr, setFr] = useState(defaultValues?.fr || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    fio2: calcFieldValidator(),
+  spo2: calcFieldValidator(),
+  fr: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    fio2: { global: p.fio2, setGlobal: p.setFio2 }
+  });
+  const { register, formState: { errors } } = form;
+  const fio2 = form.watch("fio2");
+  const spo2 = form.watch("spo2");
+  const fr = form.watch("fr");
+  
+  
+  
+  
 
   const resultado = useMemo(() => {
     const s = parseFloat(spo2);
@@ -50,9 +68,9 @@ const ROXIndexCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Evita atraso na intubação em pacientes com insuficiência respiratória hipoxêmica em CNAF. Validado para avaliação às 2, 6 e 12h."
     >
       <div className="grid grid-cols-3 gap-2">
-        <CalcField label="SpO₂" value={spo2} onChange={setSpo2} unit="%" />
-        <CalcField label="FiO₂" value={fio2} onChange={setFio2} unit="%" />
-        <CalcField label="FR" value={fr} onChange={setFr} unit="irpm" />
+        <CalcField label="SpO₂" {...register("spo2")} error={errors.spo2?.message as string} unit="%" />
+        <CalcField label="FiO₂" {...register("fio2")} error={errors.fio2?.message as string} unit="%" />
+        <CalcField label="FR" {...register("fr")} error={errors.fr?.message as string} unit="irpm" />
       </div>
       <CalcResult label="ROX Index" value={resultado} status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

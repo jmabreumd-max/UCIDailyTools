@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Beaker } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,9 +15,26 @@ export interface CalculatorProps {
 }
 
 const OsmolaridadeCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [na, setNa] = useState(defaultValues?.na || "");
-  const [glicemia, setGlicemia] = useState(defaultValues?.glicemia || "");
-  const [ureia, setUreia] = useState(defaultValues?.ureia || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    na: calcFieldValidator(),
+  glicemia: calcFieldValidator(),
+  ureia: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    na: { global: p.sodio, setGlobal: p.setSodio },
+    glicemia: { global: p.glicemia, setGlobal: p.setGlicemia },
+    ureia: { global: p.ureia, setGlobal: p.setUreia }
+  });
+  const { register, formState: { errors } } = form;
+  const na = form.watch("na");
+  const glicemia = form.watch("glicemia");
+  const ureia = form.watch("ureia");
+  
+  
+  
+  
 
   const resultado = useMemo(() => {
     const n = parseFloat(na);
@@ -52,9 +72,9 @@ const OsmolaridadeCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Essencial para diagnóstico de EHH, hiponatremia e avaliação do gap osmolar (osmolaridade medida vs calculada) na intoxicação."
     >
       <div className="grid grid-cols-3 gap-2">
-        <CalcField label="Na⁺" value={na} onChange={setNa} unit="mEq/L" />
-        <CalcField label="Glicemia" value={glicemia} onChange={setGlicemia} unit="mg/dL" />
-        <CalcField label="Ureia" value={ureia} onChange={setUreia} unit="mg/dL" />
+        <CalcField label="Na⁺" {...register("na")} error={errors.na?.message as string} unit="mEq/L" />
+        <CalcField label="Glicemia" {...register("glicemia")} error={errors.glicemia?.message as string} unit="mg/dL" />
+        <CalcField label="Ureia" {...register("ureia")} error={errors.ureia?.message as string} unit="mg/dL" />
       </div>
       <CalcResult label="Osmolaridade" value={resultado} unit="mOsm/L" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

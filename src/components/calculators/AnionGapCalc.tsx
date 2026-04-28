@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Zap } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,10 +15,30 @@ export interface CalculatorProps {
 }
 
 const AnionGapCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [na, setNa] = useState(defaultValues?.na || "");
-  const [cl, setCl] = useState(defaultValues?.cl || "");
-  const [hco3, setHco3] = useState(defaultValues?.hco3 || "");
-  const [albumina, setAlbumina] = useState(defaultValues?.albumina || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    na: calcFieldValidator(100, 180),
+  cl: calcFieldValidator(60, 140),
+  hco3: calcFieldValidator(2, 60),
+  albumina: calcFieldValidator(0.5, 8.0),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    na: { global: p.sodio, setGlobal: p.setSodio },
+    cl: { global: p.cloro, setGlobal: p.setCloro },
+    hco3: { global: p.hco3, setGlobal: p.setHco3 },
+    albumina: { global: p.albumina, setGlobal: p.setAlbumina }
+  });
+  const { register, formState: { errors } } = form;
+  const na = form.watch("na");
+  const cl = form.watch("cl");
+  const hco3 = form.watch("hco3");
+  const albumina = form.watch("albumina");
+  
+  
+  
+  
+  
 
   const ag = useMemo(() => {
     const n = parseFloat(na);
@@ -58,11 +81,11 @@ const AnionGapCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Fundamental na abordagem da acidose metabólica. AG corrigido pela albumina evita subestimação em hipoalbuminemia (comum na UTI)."
     >
       <div className="grid grid-cols-3 gap-2">
-        <CalcField label="Na⁺" value={na} onChange={setNa} unit="mEq/L" min={100} max={180} />
-        <CalcField label="Cl⁻" value={cl} onChange={setCl} unit="mEq/L" min={60} max={140} />
-        <CalcField label="HCO₃⁻" value={hco3} onChange={setHco3} unit="mEq/L" min={2} max={60} />
+        <CalcField label="Na⁺" {...register("na")} error={errors.na?.message as string} unit="mEq/L" min={100} max={180} />
+        <CalcField label="Cl⁻" {...register("cl")} error={errors.cl?.message as string} unit="mEq/L" min={60} max={140} />
+        <CalcField label="HCO₃⁻" {...register("hco3")} error={errors.hco3?.message as string} unit="mEq/L" min={2} max={60} />
       </div>
-      <CalcField label="Albumina (opcional)" value={albumina} onChange={setAlbumina} unit="g/dL" min={0.5} max={8.0} />
+      <CalcField label="Albumina (opcional)" {...register("albumina")} error={errors.albumina?.message as string} unit="g/dL" min={0.5} max={8.0} />
       <div className="grid grid-cols-2 gap-3">
         <CalcResult label="Ânion Gap" value={ag} unit="mEq/L" status={agStatus} />
         <CalcResult label="AG Corrigido" value={agCorrigido} unit="mEq/L" status={agCorrStatus} />

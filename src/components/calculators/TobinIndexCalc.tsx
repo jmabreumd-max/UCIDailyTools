@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Gauge } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,8 +15,21 @@ export interface CalculatorProps {
 }
 
 const TobinIndexCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [fr, setFr] = useState(defaultValues?.fr || "");
-  const [vt, setVt] = useState(defaultValues?.vt || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    fr: calcFieldValidator(),
+  vt: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+
+  });
+  const { register, formState: { errors } } = form;
+  const fr = form.watch("fr");
+  const vt = form.watch("vt");
+  
+  
+  
 
   const resultado = useMemo(() => {
     const f = parseFloat(fr);
@@ -48,8 +64,8 @@ const TobinIndexCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
       rationale="Principal preditor de sucesso de desmame ventilatório. RSBI < 105 tem VPN alto para falha de extubação."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="FR" value={fr} onChange={setFr} unit="irpm" />
-        <CalcField label="Volume Corrente" value={vt} onChange={setVt} unit="mL" />
+        <CalcField label="FR" {...register("fr")} error={errors.fr?.message as string} unit="irpm" />
+        <CalcField label="Volume Corrente" {...register("vt")} error={errors.vt?.message as string} unit="mL" />
       </div>
       <CalcResult label="RSBI" value={resultado} unit="irpm/L" status={status} />
       {interpretation && <Interpretation text={interpretation} status={status} />}

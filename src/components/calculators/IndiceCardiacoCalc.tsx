@@ -1,10 +1,13 @@
-import { useState, useMemo } from "react";
+import { calcFieldValidator } from "@/utils/validation";
+import {  useMemo  } from "react";
+import { z } from "zod";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import { usePatient } from "@/contexts/PatientContext";
 import CalculatorCard from "../CalculatorCard";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { TrendingUp } from "lucide-react";
-import { z } from "zod";
 
 export interface CalculatorProps {
   schema?: z.AnyZodObject;
@@ -12,11 +15,31 @@ export interface CalculatorProps {
 }
 
 const IndiceCardiacoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
-  const [dc, setDc] = useState(defaultValues?.dc || "");
-  const [fc, setFc] = useState(defaultValues?.fc || "");
-  const [vs, setVs] = useState(defaultValues?.vs || "");
-  const [altura, setAltura] = useState(defaultValues?.altura || "");
-  const [peso, setPeso] = useState(defaultValues?.peso || "");
+  const p = usePatient();
+
+  const calcSchema = z.object({
+    altura: calcFieldValidator(),
+  peso: calcFieldValidator(),
+  dc: calcFieldValidator(),
+  fc: calcFieldValidator(),
+  vs: calcFieldValidator(),
+  });
+  const form = useCalculatorForm(calcSchema, {
+    altura: { global: p.altura, setGlobal: p.setAltura },
+    peso: { global: p.pesoAtual, setGlobal: p.setPesoAtual }
+  });
+  const { register, formState: { errors } } = form;
+  const altura = form.watch("altura");
+  const peso = form.watch("peso");
+  const dc = form.watch("dc");
+  const fc = form.watch("fc");
+  const vs = form.watch("vs");
+  
+  
+  
+  
+  
+  
 
   const scCalc = useMemo(() => {
     const h = parseFloat(altura);
@@ -64,13 +87,13 @@ const IndiceCardiacoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => 
       rationale="Avalia perfusão sistêmica. Essencial no choque cardiogênico e na monitorização hemodinâmica avançada."
     >
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="Altura" value={altura} onChange={setAltura} unit="cm" />
-        <CalcField label="Peso" value={peso} onChange={setPeso} unit="kg" />
+        <CalcField label="Altura" {...register("altura")} error={errors.altura?.message as string} unit="cm" />
+        <CalcField label="Peso" {...register("peso")} error={errors.peso?.message as string} unit="kg" />
       </div>
-      <CalcField label="DC (ou calcular abaixo)" value={dc} onChange={setDc} unit="L/min" placeholder="ex: 5.0" />
+      <CalcField label="DC (ou calcular abaixo)" {...register("dc")} error={errors.dc?.message as string} unit="L/min" placeholder="ex: 5.0" />
       <div className="grid grid-cols-2 gap-3">
-        <CalcField label="FC" value={fc} onChange={setFc} unit="bpm" />
-        <CalcField label="Vol. Sistólico" value={vs} onChange={setVs} unit="mL" />
+        <CalcField label="FC" {...register("fc")} error={errors.fc?.message as string} unit="bpm" />
+        <CalcField label="Vol. Sistólico" {...register("vs")} error={errors.vs?.message as string} unit="mL" />
       </div>
       <div className="grid grid-cols-2 gap-3">
         <CalcResult label="SC (Mosteller)" value={scCalc?.toFixed(2) ?? null} unit="m²" />

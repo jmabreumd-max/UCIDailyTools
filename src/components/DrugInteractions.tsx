@@ -47,6 +47,9 @@ const INTERACTIONS: Interaction[] = [
 ];
 
 // Normalize drug name for matching
+const SEDATION_NAMES = ["Fentanil", "Remifentanil", "Sufentanil", "Midazolam", "Propofol", "Dexmedetomidina", "Cetamina", "Tiopental", "Atracúrio", "Cisatracúrio", "Rocurónio"];
+const VASO_NAMES = ["Noradrenalina", "Vasopressina", "Dobutamina", "Adrenalina", "Milrinona", "Labetalol", "Urapidilo", "Nimodipina", "Dopamina", "Fenilefrina", "Efedrina", "Amiodarona", "Lidocaína"];
+
 const normalize = (name: string) => name.toLowerCase().replace(/[^a-záàâãéèêíïóôõúç]/g, "");
 
 const DrugInteractions = () => {
@@ -54,9 +57,6 @@ const DrugInteractions = () => {
   const [sedationRates] = usePersistedState<string[]>("neuro-sedationRates", []);
   const [vasoRates] = usePersistedState<string[]>("cardio-vasoRates", []);
   const [activeMeds] = usePersistedState<string[]>("farmacos-active", []);
-
-  const SEDATION_NAMES = ["Fentanil", "Remifentanil", "Sufentanil", "Midazolam", "Propofol", "Dexmedetomidina", "Cetamina", "Tiopental", "Atracúrio", "Cisatracúrio", "Rocurónio"];
-  const VASO_NAMES = ["Noradrenalina", "Vasopressina", "Dobutamina", "Adrenalina", "Milrinona", "Labetalol", "Urapidilo", "Nimodipina", "Dopamina", "Fenilefrina", "Efedrina", "Amiodarona", "Lidocaína"];
 
   const activeDrugs = useMemo(() => {
     const drugs: string[] = [...activeMeds];

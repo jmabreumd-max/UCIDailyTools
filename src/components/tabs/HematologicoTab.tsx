@@ -158,11 +158,11 @@ const HematologicoTab = () => {
         info={<InfoTooltip interpretation="Plaquetas e INR partilhados com outros separadores (SOFA, Child-Pugh, HAS-BLED)." />}>
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <CalcField label="Plaquetas" value={plaquetas} onChange={setPlaquetas} unit="×10³/µL" />
+            <CalcField label="Plaquetas" value={plaquetas} onChange={(e) => setPlaquetas(e.target.value)} unit="×10³/µL" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Normal: 150–400. &lt; 100: trombocitopenia</p>
           </div>
           <div>
-            <CalcField label="INR" value={inr} onChange={setInr} unit="" />
+            <CalcField label="INR" value={inr} onChange={(e) => setInr(e.target.value)} unit="" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Normal: 0.9–1.1. Alvo AVK: 2.0–3.0</p>
           </div>
         </div>
@@ -183,19 +183,19 @@ const HematologicoTab = () => {
         
         <div className="grid grid-cols-2 gap-3 mb-3">
           <div>
-            <CalcField label="EXTEM CT" value={extemCt} onChange={setExtemCt} unit="s" />
+            <CalcField label="EXTEM CT" value={extemCt} onChange={(e) => setExtemCt(e.target.value)} unit="s" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Tempo de Coagulação (N: 38-79s)</p>
           </div>
           <div>
-            <CalcField label="FIBTEM MCF" value={fibtemMcf} onChange={setFibtemMcf} unit="mm" />
+            <CalcField label="FIBTEM MCF" value={fibtemMcf} onChange={(e) => setFibtemMcf(e.target.value)} unit="mm" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Firmeza Fibrinogénio (Norm: 9-25)</p>
           </div>
           <div>
-            <CalcField label="EXTEM MCF" value={extemMcf} onChange={setExtemMcf} unit="mm" />
+            <CalcField label="EXTEM MCF" value={extemMcf} onChange={(e) => setExtemMcf(e.target.value)} unit="mm" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Firmeza Máxima (Normal: 50-72)</p>
           </div>
           <div>
-            <CalcField label="EXTEM ML" value={extemMl} onChange={setExtemMl} unit="%" />
+            <CalcField label="EXTEM ML" value={extemMl} onChange={(e) => setExtemMl(e.target.value)} unit="%" />
             <p className="text-[8px] text-muted-foreground mt-0.5">Lise Máxima (Normal: &lt; 15%)</p>
           </div>
         </div>
@@ -279,7 +279,7 @@ const HematologicoTab = () => {
             <InfoTooltip reference={`Profilático: 0.2–0.5 | Terapêutico: 0.5–1.0 UI/mL`} />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <CalcField label="" value={antiXa} onChange={setAntiXa} unit="UI/mL" />
+            <CalcField label="" value={antiXa} onChange={(e) => setAntiXa(e.target.value)} unit="UI/mL" />
           </div>
           {antiXaStatus && (
             <Interpretation
@@ -310,7 +310,7 @@ const HematologicoTab = () => {
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <CalcField label="aPTT actual" value={aptt} onChange={setAptt} unit="seg" />
+          <CalcField label="aPTT actual" value={aptt} onChange={(e) => setAptt(e.target.value)} unit="seg" />
         </div>
 
         <div className="space-y-1.5 mt-3">
