@@ -4,11 +4,17 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { FlaskConical } from "lucide-react";
+import { z } from "zod";
 
-const ClearanceCreatCalc = () => {
-  const [idade, setIdade] = useState("");
-  const [peso, setPeso] = useState("");
-  const [creatinina, setCreatinina] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const ClearanceCreatCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [idade, setIdade] = useState(defaultValues?.idade || "");
+  const [peso, setPeso] = useState(defaultValues?.peso || "");
+  const [creatinina, setCreatinina] = useState(defaultValues?.creatinina || "");
   const [sexo, setSexo] = useState<"M" | "F">("M");
 
   const resultado = useMemo(() => {

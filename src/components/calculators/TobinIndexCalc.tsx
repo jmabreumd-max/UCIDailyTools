@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Gauge } from "lucide-react";
+import { z } from "zod";
 
-const TobinIndexCalc = () => {
-  const [fr, setFr] = useState("");
-  const [vt, setVt] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const TobinIndexCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [fr, setFr] = useState(defaultValues?.fr || "");
+  const [vt, setVt] = useState(defaultValues?.vt || "");
 
   const resultado = useMemo(() => {
     const f = parseFloat(fr);

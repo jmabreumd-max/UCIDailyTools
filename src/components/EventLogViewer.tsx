@@ -36,14 +36,14 @@ export default function EventLogViewer() {
     <Sheet>
       <SheetTrigger asChild>
         <button 
-          className="relative flex items-center justify-center p-2 rounded-lg bg-muted/50 hover:bg-muted text-muted-foreground transition-colors"
+          className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl shadow-primary/20 hover:scale-105 active:scale-95 transition-all duration-200"
           title="Registo de Eventos"
         >
-          <ClipboardList className="w-5 h-5" />
+          <ClipboardList className="w-6 h-6" />
           {logs.length > 0 && (
-            <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+            <span className="absolute top-0 right-0 flex h-3.5 w-3.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-red-500 border-2 border-primary"></span>
             </span>
           )}
         </button>

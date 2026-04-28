@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Wind } from "lucide-react";
+import { z } from "zod";
 
-const PFRatioCalc = () => {
-  const [pao2, setPao2] = useState("");
-  const [fio2, setFio2] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const PFRatioCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [pao2, setPao2] = useState(defaultValues?.pao2 || "");
+  const [fio2, setFio2] = useState(defaultValues?.fio2 || "");
 
   const resultado = useMemo(() => {
     const p = parseFloat(pao2);

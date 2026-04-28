@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { HeartPulse } from "lucide-react";
+import { z } from "zod";
 
-const PAMCalc = () => {
-  const [pas, setPas] = useState("");
-  const [pad, setPad] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const PAMCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [pas, setPas] = useState(defaultValues?.pas || "");
+  const [pad, setPad] = useState(defaultValues?.pad || "");
 
   const resultado = useMemo(() => {
     const s = parseFloat(pas);

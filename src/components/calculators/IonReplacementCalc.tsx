@@ -5,16 +5,22 @@ import InfoTooltip from "../InfoTooltip";
 import CollapsibleSection from "../CollapsibleSection";
 import Interpretation from "../Interpretation";
 import { AlertCircle } from "lucide-react";
+import { z } from "zod";
 
-export default function IonReplacementCalc() {
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+export default function IonReplacementCalc({ schema, defaultValues }: CalculatorProps = {}) {
   const { pesoAtual } = usePatient();
   const peso = parseFloat(pesoAtual) || 0;
 
-  const [naAtual, setNaAtual] = useState("");
-  const [naAlvo, setNaAlvo] = useState("");
+  const [naAtual, setNaAtual] = useState(defaultValues?.naAtual || "");
+  const [naAlvo, setNaAlvo] = useState(defaultValues?.naAlvo || "");
   
-  const [kAtual, setKAtual] = useState("");
-  const [kAlvo, setKAlvo] = useState("");
+  const [kAtual, setKAtual] = useState(defaultValues?.kAtual || "");
+  const [kAlvo, setKAlvo] = useState(defaultValues?.kAlvo || "");
 
   const tbw = peso * 0.6; // Simplified Total Body Water (0.6 for men, usually 0.5 for women)
 

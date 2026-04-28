@@ -1,5 +1,6 @@
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { usePatient } from "@/contexts/PatientContext";
+import { Activity, Brain, Wind, Heart, FlaskConical, Utensils, Droplets, Bug, Pill, BarChart3, ClipboardCheck } from "lucide-react";
 import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
@@ -7,7 +8,6 @@ import InfoTooltip from "../InfoTooltip";
 import CollapsibleSection from "../CollapsibleSection";
 import ClinicalTimers from "../ClinicalTimers";
 
-/* ── Rockwood Clinical Frailty Scale ── */
 const CFS_LEVELS = [
   { score: 1, label: "Very Fit", desc: "Robusto, ativo, energético e motivado. Exercício regular." },
   { score: 2, label: "Well", desc: "Sem doença ativa mas menos fit que 1. Exercício ocasional." },
@@ -20,7 +20,20 @@ const CFS_LEVELS = [
   { score: 9, label: "Terminally Ill", desc: "Em fim de vida. Expectativa < 6 meses." },
 ];
 
-const GeralTab = () => {
+const quickNav = [
+  { id: "neuro", label: "Neurologia", desc: "GCS, FOUR, Sedação, PIC", icon: Brain, color: "text-purple-500", bg: "bg-purple-500/10" },
+  { id: "vent", label: "Ventilatório", desc: "P/F, ROX, Complacência, Drive", icon: Wind, color: "text-sky-500", bg: "bg-sky-500/10" },
+  { id: "cardio", label: "Cardíaco", desc: "PAM, Índice Cardíaco, Choque", icon: Heart, color: "text-rose-500", bg: "bg-rose-500/10" },
+  { id: "renal", label: "Renal", desc: "Cl. Cr, Bicarbonato, Balança", icon: FlaskConical, color: "text-amber-500", bg: "bg-amber-500/10" },
+  { id: "digest", label: "Digestivo", desc: "Nutrição, Fígado, Trânsito", icon: Utensils, color: "text-emerald-500", bg: "bg-emerald-500/10" },
+  { id: "hemato", label: "Hematológico", desc: "ROTEM, Sangramento, Agentes", icon: Droplets, color: "text-red-500", bg: "bg-red-500/10" },
+  { id: "infecao", label: "Infeção", desc: "Sepsis, Antibióticos", icon: Bug, color: "text-indigo-500", bg: "bg-indigo-500/10" },
+  { id: "farmacos", label: "Fármacos", desc: "Doses, Perfusões, DIL", icon: Pill, color: "text-fuchsia-500", bg: "bg-fuchsia-500/10" },
+  { id: "prognostico", label: "Prognóstico", desc: "APACHE II, SOFA", icon: BarChart3, color: "text-blue-500", bg: "bg-blue-500/10" },
+  { id: "final", label: "Finalização", desc: "Checklist de Alta", icon: ClipboardCheck, color: "text-green-500", bg: "bg-green-500/10" },
+];
+
+const GeralTab = ({ setActiveTab }: { setActiveTab: (id: string) => void }) => {
   const {
     pesoAtual, setPesoAtual, altura, setAltura, idade, setIdade,
     sexo, setSexo,
@@ -34,6 +47,27 @@ const GeralTab = () => {
   return (
     <div className="space-y-4">
       {/* Patient Data */}
+      <CollapsibleSection title="Acesso Rápido" defaultOpen
+        info={<InfoTooltip interpretation="Navegação rápida para os sistemas e ferramentas clínicas calculadoras." />}>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+          {quickNav.map((nav) => {
+            const Icon = nav.icon;
+            return (
+              <button key={nav.id} onClick={() => setActiveTab(nav.id)}
+                className="flex items-start text-left gap-3 p-3 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary/30 transition-all group">
+                <div className={`p-2 rounded-lg shrink-0 transition-colors ${nav.bg}`}>
+                  <Icon className={`w-5 h-5 ${nav.color}`} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-[13px] text-foreground group-hover:text-primary transition-colors">{nav.label}</h3>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-2 leading-tight">{nav.desc}</p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </CollapsibleSection>
+
       <CollapsibleSection title="Dados do Doente" defaultOpen
         info={<InfoTooltip interpretation="Dados antropométricos e demográficos. Persistem até clicar 'Limpar / Novo Turno'." />}>
 

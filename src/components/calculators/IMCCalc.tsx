@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Scale } from "lucide-react";
+import { z } from "zod";
 
-const IMCCalc = () => {
-  const [peso, setPeso] = useState("");
-  const [altura, setAltura] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const IMCCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [peso, setPeso] = useState(defaultValues?.peso || "");
+  const [altura, setAltura] = useState(defaultValues?.altura || "");
 
   const resultado = useMemo(() => {
     const p = parseFloat(peso);

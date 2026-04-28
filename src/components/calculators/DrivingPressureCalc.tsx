@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Activity } from "lucide-react";
+import { z } from "zod";
 
-const DrivingPressureCalc = () => {
-  const [pplato, setPplato] = useState("");
-  const [peep, setPeep] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const DrivingPressureCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [pplato, setPplato] = useState(defaultValues?.pplato || "");
+  const [peep, setPeep] = useState(defaultValues?.peep || "");
 
   const dp = useMemo(() => {
     const pp = parseFloat(pplato);

@@ -4,13 +4,19 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { TrendingUp } from "lucide-react";
+import { z } from "zod";
 
-const IndiceCardiacoCalc = () => {
-  const [dc, setDc] = useState("");
-  const [fc, setFc] = useState("");
-  const [vs, setVs] = useState("");
-  const [altura, setAltura] = useState("");
-  const [peso, setPeso] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const IndiceCardiacoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [dc, setDc] = useState(defaultValues?.dc || "");
+  const [fc, setFc] = useState(defaultValues?.fc || "");
+  const [vs, setVs] = useState(defaultValues?.vs || "");
+  const [altura, setAltura] = useState(defaultValues?.altura || "");
+  const [peso, setPeso] = useState(defaultValues?.peso || "");
 
   const scCalc = useMemo(() => {
     const h = parseFloat(altura);

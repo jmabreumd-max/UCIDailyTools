@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Minus } from "lucide-react";
+import { z } from "zod";
 
-const DeficitBicarbCalc = () => {
-  const [peso, setPeso] = useState("");
-  const [hco3Atual, setHco3Atual] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const DeficitBicarbCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [peso, setPeso] = useState(defaultValues?.peso || "");
+  const [hco3Atual, setHco3Atual] = useState(defaultValues?.hco3Atual || "");
   const [hco3Desejado, setHco3Desejado] = useState("24");
 
   const resultado = useMemo(() => {

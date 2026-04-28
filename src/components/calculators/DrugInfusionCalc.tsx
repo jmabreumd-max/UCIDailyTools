@@ -6,6 +6,7 @@ import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Syringe, Settings, X, Plus, Trash2 } from "lucide-react";
 import { useEventLog } from "@/contexts/EventLogContext";
+import { z } from "zod";
 
 interface Concentration {
   label: string;
@@ -123,7 +124,12 @@ const DRUG_INTERPRETATIONS: Record<string, (dose: number, unit: string) => strin
   },
 };
 
-const DrugInfusionCalc = () => {
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const DrugInfusionCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
   const [customConfigs, setCustomConfigs] = usePersistedState<Record<string, Concentration[]>>("drug-configs-override", {});
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -137,11 +143,11 @@ const DrugInfusionCalc = () => {
   const [selectedDrug, setSelectedDrug] = useState(0);
   const [selectedConc, setSelectedConc] = useState(0);
   const [isCustomDilution, setIsCustomDilution] = useState(false);
-  const [customMass, setCustomMass] = useState("");
-  const [customVolume, setCustomVolume] = useState("");
-  const [peso, setPeso] = useState("");
+  const [customMass, setCustomMass] = useState(defaultValues?.customMass || "");
+  const [customVolume, setCustomVolume] = useState(defaultValues?.customVolume || "");
+  const [peso, setPeso] = useState(defaultValues?.peso || "");
   const [mode, setMode] = useState<"dose_to_rate" | "rate_to_dose">("dose_to_rate");
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(defaultValues?.inputValue || "");
 
   const drug = DRUGS[selectedDrug] || DRUGS[0];
   const conc = drug.concentrations[selectedConc] || drug.concentrations[0];

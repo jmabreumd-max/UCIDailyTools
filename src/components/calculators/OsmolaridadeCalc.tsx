@@ -4,11 +4,17 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Beaker } from "lucide-react";
+import { z } from "zod";
 
-const OsmolaridadeCalc = () => {
-  const [na, setNa] = useState("");
-  const [glicemia, setGlicemia] = useState("");
-  const [ureia, setUreia] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const OsmolaridadeCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [na, setNa] = useState(defaultValues?.na || "");
+  const [glicemia, setGlicemia] = useState(defaultValues?.glicemia || "");
+  const [ureia, setUreia] = useState(defaultValues?.ureia || "");
 
   const resultado = useMemo(() => {
     const n = parseFloat(na);

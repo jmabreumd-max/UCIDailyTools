@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { FlaskConical } from "lucide-react";
+import { z } from "zod";
 
-const GASACalc = () => {
-  const [albSoro, setAlbSoro] = useState("");
-  const [albAscite, setAlbAscite] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const GASACalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [albSoro, setAlbSoro] = useState(defaultValues?.albSoro || "");
+  const [albAscite, setAlbAscite] = useState(defaultValues?.albAscite || "");
 
   const resultado = useMemo(() => {
     const s = parseFloat(albSoro);

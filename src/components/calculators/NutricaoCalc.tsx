@@ -4,12 +4,18 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Utensils } from "lucide-react";
+import { z } from "zod";
 
-const NutricaoCalc = () => {
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const NutricaoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
   const [sexo, setSexo] = useState<"M" | "F">("M");
-  const [altura, setAltura] = useState("");
-  const [pesoAtual, setPesoAtual] = useState("");
-  const [propofolRate, setPropofolRate] = useState("");
+  const [altura, setAltura] = useState(defaultValues?.altura || "");
+  const [pesoAtual, setPesoAtual] = useState(defaultValues?.pesoAtual || "");
+  const [propofolRate, setPropofolRate] = useState(defaultValues?.propofolRate || "");
   const [propofolConc, setPropofolConc] = useState<"1" | "2">("1");
   const [metaCal, setMetaCal] = useState("25");
   const [metaProt, setMetaProt] = useState("1.5");

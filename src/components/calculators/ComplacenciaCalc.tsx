@@ -4,11 +4,17 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Gauge } from "lucide-react";
+import { z } from "zod";
 
-const ComplacenciaCalc = () => {
-  const [vc, setVc] = useState("");
-  const [pplato, setPplato] = useState("");
-  const [peep, setPeep] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const ComplacenciaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [vc, setVc] = useState(defaultValues?.vc || "");
+  const [pplato, setPplato] = useState(defaultValues?.pplato || "");
+  const [peep, setPeep] = useState(defaultValues?.peep || "");
 
   const resultado = useMemo(() => {
     const v = parseFloat(vc);

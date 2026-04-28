@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Thermometer } from "lucide-react";
+import { z } from "zod";
 
-const SodioCorrigidoCalc = () => {
-  const [sodio, setSodio] = useState("");
-  const [glicemia, setGlicemia] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const SodioCorrigidoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [sodio, setSodio] = useState(defaultValues?.sodio || "");
+  const [glicemia, setGlicemia] = useState(defaultValues?.glicemia || "");
 
   const resultado = useMemo(() => {
     const na = parseFloat(sodio);

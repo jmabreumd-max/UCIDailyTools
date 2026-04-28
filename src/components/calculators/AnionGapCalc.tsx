@@ -4,12 +4,18 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Zap } from "lucide-react";
+import { z } from "zod";
 
-const AnionGapCalc = () => {
-  const [na, setNa] = useState("");
-  const [cl, setCl] = useState("");
-  const [hco3, setHco3] = useState("");
-  const [albumina, setAlbumina] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const AnionGapCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [na, setNa] = useState(defaultValues?.na || "");
+  const [cl, setCl] = useState(defaultValues?.cl || "");
+  const [hco3, setHco3] = useState(defaultValues?.hco3 || "");
+  const [albumina, setAlbumina] = useState(defaultValues?.albumina || "");
 
   const ag = useMemo(() => {
     const n = parseFloat(na);

@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Droplets } from "lucide-react";
+import { z } from "zod";
 
-const CalcioCorrigidoCalc = () => {
-  const [calcio, setCalcio] = useState("");
-  const [albumina, setAlbumina] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const CalcioCorrigidoCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [calcio, setCalcio] = useState(defaultValues?.calcio || "");
+  const [albumina, setAlbumina] = useState(defaultValues?.albumina || "");
 
   const resultado = useMemo(() => {
     const ca = parseFloat(calcio);

@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Droplets } from "lucide-react";
+import { z } from "zod";
 
-const GlicoseCorrigidaCalc = () => {
-  const [glicose, setGlicose] = useState("");
-  const [sodio, setSodio] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const GlicoseCorrigidaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [glicose, setGlicose] = useState(defaultValues?.glicose || "");
+  const [sodio, setSodio] = useState(defaultValues?.sodio || "");
 
   const naCorrResult = useMemo(() => {
     const gli = parseFloat(glicose);

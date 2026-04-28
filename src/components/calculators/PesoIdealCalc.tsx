@@ -4,9 +4,15 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { User } from "lucide-react";
+import { z } from "zod";
 
-const PesoIdealCalc = () => {
-  const [altura, setAltura] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const PesoIdealCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [altura, setAltura] = useState(defaultValues?.altura || "");
   const [sexo, setSexo] = useState<"M" | "F">("M");
 
   const resultado = useMemo(() => {

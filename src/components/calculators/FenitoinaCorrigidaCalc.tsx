@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Pill } from "lucide-react";
+import { z } from "zod";
 
-const FenitoinaCorrigidaCalc = () => {
-  const [fenitoina, setFenitoina] = useState("");
-  const [albumina, setAlbumina] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const FenitoinaCorrigidaCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [fenitoina, setFenitoina] = useState(defaultValues?.fenitoina || "");
+  const [albumina, setAlbumina] = useState(defaultValues?.albumina || "");
 
   const resultado = useMemo(() => {
     const f = parseFloat(fenitoina);

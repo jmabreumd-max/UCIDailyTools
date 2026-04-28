@@ -4,10 +4,16 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Waves } from "lucide-react";
+import { z } from "zod";
 
-const WaterDeficitCalc = () => {
-  const [peso, setPeso] = useState("");
-  const [naAtual, setNaAtual] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const WaterDeficitCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [peso, setPeso] = useState(defaultValues?.peso || "");
+  const [naAtual, setNaAtual] = useState(defaultValues?.naAtual || "");
   const [sexo, setSexo] = useState<"M" | "F">("M");
 
   const resultado = useMemo(() => {

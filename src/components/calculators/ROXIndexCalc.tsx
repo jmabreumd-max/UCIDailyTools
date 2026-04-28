@@ -4,11 +4,17 @@ import CalcField from "../CalcField";
 import CalcResult from "../CalcResult";
 import Interpretation from "../Interpretation";
 import { Wind } from "lucide-react";
+import { z } from "zod";
 
-const ROXIndexCalc = () => {
-  const [spo2, setSpo2] = useState("");
-  const [fio2, setFio2] = useState("");
-  const [fr, setFr] = useState("");
+export interface CalculatorProps {
+  schema?: z.AnyZodObject;
+  defaultValues?: Record<string, any>;
+}
+
+const ROXIndexCalc = ({ schema, defaultValues }: CalculatorProps = {}) => {
+  const [spo2, setSpo2] = useState(defaultValues?.spo2 || "");
+  const [fio2, setFio2] = useState(defaultValues?.fio2 || "");
+  const [fr, setFr] = useState(defaultValues?.fr || "");
 
   const resultado = useMemo(() => {
     const s = parseFloat(spo2);
